@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">LittleReader</string>
+    <string name="action_settings">Settings</string>
+    <string name="search_url">http://139.199.36.170:8080/novel.rest/novel/list</string>
+</resources>
