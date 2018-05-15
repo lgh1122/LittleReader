@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.widget.ImageView;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -139,6 +140,10 @@ public class ImageLoader {
                             //缓存到二级缓存(分线程)
                             // /storage/sdcard/Android/data/packageName/files/
                             String filesPath = context.getExternalFilesDir(null).getAbsolutePath()+"/novellist";
+                            File file = new File(filesPath);
+                            if(!file.exists()){
+                                file.mkdirs();
+                            }
                             // http://192.168.10.165:8080//L05_Web/images/f10.jpg
                             String fileName = imagePath.substring(imagePath.lastIndexOf("/")+1);//  f10.jpg
                             String filePath = filesPath+"/"+fileName;
@@ -172,6 +177,10 @@ public class ImageLoader {
 
     private Bitmap getFromSecondCache(String imagePath) {
         String filesPath = context.getExternalFilesDir(null).getAbsolutePath()+"/novellist";
+        File file = new File(filesPath);
+        if(!file.exists()){
+            file.mkdirs();
+        }
         String imageName = imagePath.substring(imagePath.lastIndexOf("/")+1);
         String filePath = filesPath+"/"+imageName;
 

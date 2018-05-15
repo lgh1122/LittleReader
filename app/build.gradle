@@ -17,6 +17,10 @@ android {
         }
     }
     sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/2'] } }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 repositories {
     maven {
@@ -37,6 +41,7 @@ dependencies {
     compile 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.3'
     //没有使用特殊Header，可以不加这行
     compile 'com.github.recruit-lifestyle:WaveSwipeRefreshLayout:1.6'
+    compile 'com.hyman:flowlayout-lib:1.1.2'
     implementation files('libs/jackson-core-2.4.2.jar')
     implementation files('libs/jackson-databind-2.4.2.jar')
     implementation files('libs/gson-2.1.jar')

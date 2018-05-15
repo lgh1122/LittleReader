@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -25,6 +27,9 @@ import com.google.gson.reflect.TypeToken;
 import com.liuguanghui.littlereader.adapter.SearchListAdapter;
 import com.liuguanghui.littlereader.dao.NovelInfoVODao;
 import com.liuguanghui.littlereader.pojo.NovelVO;
+import com.zhy.view.flowlayout.FlowLayout;
+import com.zhy.view.flowlayout.TagAdapter;
+import com.zhy.view.flowlayout.TagFlowLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,6 +41,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -49,23 +55,58 @@ public class SearchActivity  extends Activity {
     private SearchListAdapter adapter;
     private NovelInfoVODao dao ;
     private LinearLayout ll_search_loading;
+    private LinearLayout ll_search_load_recommend;
     private EditText search_text;
     private ImageView search_back;
     private ImageView search_search;
+    private LayoutInflater mInflater;
+    private TagFlowLayout  search_all_book_name;
 
     private Handler handler = new SearchHandler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+
         dao = new NovelInfoVODao(SearchActivity.this);
         //创建分线程请求服务器动态加载数据并显示
         search_list_view= findViewById(R.id.search_list_view);
         ll_search_loading = (LinearLayout) findViewById(R.id.ll_search_loading);
+        ll_search_load_recommend = (LinearLayout) findViewById(R.id.ll_search_load_recommend);
         search_text = findViewById(R.id.search_text);
         search_search =   (ImageView) findViewById(R.id.search_search);
         search_back =   (ImageView) findViewById(R.id.search_back);
+        search_all_book_name = findViewById(R.id.search_all_book_name);
 
+List<String> listBooks = new ArrayList<>();
+listBooks.add("道");
+listBooks.add("氪金魔主");
+listBooks.add("英雄联盟");
+listBooks.add("七杀影响的");
+listBooks.add("氪对方的族");
+listBooks.add("武道宗师");
+listBooks.add("杀毒软件");
+        //大家都在搜的书籍
+        search_all_book_name.setAdapter(new TagAdapter<String>(listBooks) {
+            @Override
+            public View getView(FlowLayout parent, int position, String s) {
+                mInflater = LayoutInflater.from(SearchActivity.this);
+                View   convertView = mInflater.inflate(R.layout.tags_tv, null);
+                TextView tv =  convertView.findViewById(R.id.tv_tag);
+                tv.setText(s);
+                return tv;
+            }
+        });
+        search_all_book_name.setOnTagClickListener((view, position, parent) -> {
+            /*Intent intent = new Intent(mContext, BookDetailActivity.class);
+            intent.putExtra("bookid", likebooks.get(position).get_id());
+            startActivity(intent);*/
+            Toast.makeText(SearchActivity.this,listBooks.get(position),Toast.LENGTH_SHORT).show();
+            search_text.setText(listBooks.get(position));
+            search_search.performClick();
+            return true;
+        });
 
         search_search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +114,9 @@ public class SearchActivity  extends Activity {
                 final String text = search_text.getText().toString();
                 if(text!=null && !"".equals(text)){
                     //1. 主线程, 显示提示视图
+                    ll_search_load_recommend.setVisibility(View.GONE);
                     ll_search_loading.setVisibility(View.VISIBLE);
+
                     //分线程，用于查询书籍书籍从服务器
                     Thread thread = new SearchThread(text);
                     thread.start();

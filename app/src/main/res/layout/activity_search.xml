@@ -100,6 +100,102 @@
                     android:layout_height="wrap_content"
                     android:text="正在加载中..." />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_search_load_recommend"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="10dp">
+                    <TextView
+
+                        android:layout_width="330dp"
+                        android:layout_height="wrap_content"
+                        android:text="大家都在搜"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="10dp"
+                        />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/refresh"
+                        android:layout_toLeftOf ="@id/search_other"
+                        android:layout_alignBottom  ="@id/search_other"
+                        android:layout_marginBottom="4dp"
+                        />
+                    <TextView
+                        android:id="@+id/search_other"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="换一批"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp"/>
+                </RelativeLayout>
+
+               <!-- <com.zhy.view.flowlayout.TagFlowLayout
+                    android:id="@+id/id_flowlayout"
+
+                    max_select="-1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp">
+                </com.zhy.view.flowlayout.TagFlowLayout>-->
+
+                <com.zhy.view.flowlayout.TagFlowLayout
+                    android:id="@+id/search_all_book_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"/>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="10dp">
+                    <TextView
+                        android:id="@+id/se_old"
+                        android:layout_width="330dp"
+                        android:layout_height="wrap_content"
+                        android:text="搜索历史"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="10dp"
+                        />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/delete_disable_dark"
+                        android:layout_toLeftOf ="@id/search_removehistory"
+                        android:layout_alignBottom  ="@id/search_removehistory"
+                        android:layout_marginBottom="4dp"
+                        />
+                    <TextView
+                        android:id="@+id/search_removehistory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="清空"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp"/>
+
+                </RelativeLayout>
+
+                <ListView
+                    android:id="@+id/search_history_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+
+            </LinearLayout>
+
         </FrameLayout>
 
     </LinearLayout>
