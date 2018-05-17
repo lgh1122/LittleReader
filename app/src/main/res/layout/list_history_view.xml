@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@+id/history_image_view"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@mipmap/search_history_mark_light"
+        android:layout_marginLeft="10dp"
+        android:layout_marginVertical="8dp"
+       />
+    <TextView
+        android:id="@+id/history_text_view"
+        style="@style/Widget.AppCompat.TextView.SpinnerItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="科技人生"
+        android:textSize="16sp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:gravity="center"/>
+</LinearLayout>

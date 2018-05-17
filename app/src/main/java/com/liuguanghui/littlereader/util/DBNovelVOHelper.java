@@ -50,6 +50,13 @@ public class DBNovelVOHelper extends SQLiteOpenHelper {
 		db.execSQL("insert into tbNovelInfo(image, novelName ,chapter ,isTop ) values ("+R.mipmap.commonnovelimg+",'氪金魔主','青龙不死身',0)");
 		db.execSQL("insert into tbNovelInfo(image, novelName ,chapter ,isTop ) values ("+R.mipmap.hdxsx+",'花都小神仙','大结局',0)");
 */
+
+		//建表
+		sql = "create table tbNovelSearchHistory(" +
+				"id INTEGER , " +
+				"keyword varchar " +
+				")	";
+		db.execSQL(sql);
 	}
 
 	/**

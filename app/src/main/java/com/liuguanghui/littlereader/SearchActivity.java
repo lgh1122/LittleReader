@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import com.liuguanghui.littlereader.adapter.SearchListAdapter;
 import com.liuguanghui.littlereader.dao.NovelInfoVODao;
+import com.liuguanghui.littlereader.dao.SearchHistoryDao;
 import com.liuguanghui.littlereader.pojo.NovelVO;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
@@ -43,7 +45,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public class SearchActivity  extends Activity {
@@ -51,9 +55,12 @@ public class SearchActivity  extends Activity {
     protected static final int WHAT_REQUEST_ERROR = 2;
     private static final int WHAT_REQUEST_NONE = 3 ;
     private ListView search_list_view;
+    private ListView search_history_view;
+    private TextView search_removehistory;
     private List<NovelVO> data;
     private SearchListAdapter adapter;
     private NovelInfoVODao dao ;
+    private SearchHistoryDao historyDao ;
     private LinearLayout ll_search_loading;
     private LinearLayout ll_search_load_recommend;
     private EditText search_text;
@@ -70,14 +77,17 @@ public class SearchActivity  extends Activity {
 
 
         dao = new NovelInfoVODao(SearchActivity.this);
+        historyDao = new SearchHistoryDao(SearchActivity.this);
         //创建分线程请求服务器动态加载数据并显示
         search_list_view= findViewById(R.id.search_list_view);
+        search_history_view= findViewById(R.id.search_history_view);
         ll_search_loading = (LinearLayout) findViewById(R.id.ll_search_loading);
         ll_search_load_recommend = (LinearLayout) findViewById(R.id.ll_search_load_recommend);
-        search_text = findViewById(R.id.search_text);
+        search_text = findViewById(R.id.search_text);  //搜索文本输入框
+        search_removehistory = findViewById(R.id.search_removehistory);  //清空历史记录
         search_search =   (ImageView) findViewById(R.id.search_search);
         search_back =   (ImageView) findViewById(R.id.search_back);
-        search_all_book_name = findViewById(R.id.search_all_book_name);
+        search_all_book_name = findViewById(R.id.search_all_book_name); //大家都在搜 流动布局
 
 List<String> listBooks = new ArrayList<>();
 listBooks.add("道");
@@ -102,7 +112,7 @@ listBooks.add("杀毒软件");
             /*Intent intent = new Intent(mContext, BookDetailActivity.class);
             intent.putExtra("bookid", likebooks.get(position).get_id());
             startActivity(intent);*/
-            Toast.makeText(SearchActivity.this,listBooks.get(position),Toast.LENGTH_SHORT).show();
+            //Toast.makeText(SearchActivity.this,listBooks.get(position),Toast.LENGTH_SHORT).show();
             search_text.setText(listBooks.get(position));
             search_search.performClick();
             return true;
@@ -116,6 +126,12 @@ listBooks.add("杀毒软件");
                     //1. 主线程, 显示提示视图
                     ll_search_load_recommend.setVisibility(View.GONE);
                     ll_search_loading.setVisibility(View.VISIBLE);
+                    String oldHisttory = historyDao.getHistory(text);
+                    if(oldHisttory!=null){
+                        historyDao.update(text);
+                    }else{
+                        historyDao.add(text);
+                    }
 
                     //分线程，用于查询书籍书籍从服务器
                     Thread thread = new SearchThread(text);
@@ -174,9 +190,44 @@ listBooks.add("杀毒软件");
 
 
 
-        // 获取书籍列表数据
+        // 搜索历史列表
+        //准备集合数据
+        List<String> historyList = historyDao.getAll();
+        List<Map<String, Object>> historyData = new ArrayList<Map<String,Object>>();
+        Map<String, Object> map  = null;
+         for (String str : historyList){
+             map = new HashMap<String, Object>();
+             map.put("keyword", str);
+             map.put("image", R.mipmap.search_history_mark_light);
+             historyData.add(map);
+         }
+        String[] from = {"image","keyword"};
 
+        int[] to = {R.id.history_image_view,R.id.history_text_view};
+        //准备ArrayAdapter对象
+        SimpleAdapter simpleAdapter = new SimpleAdapter(this, historyData, R.layout.list_history_view, from, to);
 
+        //设置Adapter显示列表
+        search_history_view.setAdapter(simpleAdapter);
+        search_history_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Map<String, Object> map = historyData.get(position);
+                String keyword = (String) map.get("keyword");
+                search_text.setText(keyword);
+                search_search.performClick();
+
+            }
+        });
+
+        search_removehistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                historyDao.deleteAll();
+                historyData.clear();
+                simpleAdapter.notifyDataSetChanged();
+            }
+        });
 
     }
 
