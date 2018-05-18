@@ -82,6 +82,10 @@ public class NovelInfoVODao {
 			values.put("readDate", novelInfo.getReadDate());
 		}
 		values.put("isTop", novelInfo.getIsTop());
+	    values.put("latestchapterid", novelInfo.getLatestchapterid());
+		values.put("latestchaptername", novelInfo.getLatestchaptername());
+
+
 		int updateCount = database.update("tbNovelInfo", values ,
 				" id="+novelInfo.getId() + " and netid =" +novelInfo.getNetid(), null);
 		Log.i("TAG", "updateCount="+updateCount);
