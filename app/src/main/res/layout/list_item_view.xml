@@ -1,60 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@drawable/selector_common_bg">
     <ImageView
         android:id="@+id/main_list_image"
-        android:layout_width="50dp"
-        android:layout_height="70dp"
-        android:src="@mipmap/ic_launcher"
+        android:layout_width="45dp"
+        android:layout_height="60dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
-       />
+        android:layout_marginTop="10dp"
+        android:scaleType="centerInside"
+        android:src="@mipmap/ic_launcher"/>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginLeft="10dp"
-        android:paddingVertical="10dp"
-        >
+        android:layout_centerVertical="true"
+        android:layout_margin="10dp"
+        android:layout_toRightOf="@+id/main_list_image"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/main_list_title"
-            style="@style/Widget.AppCompat.TextView.SpinnerItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5sp"
+            android:ellipsize="end"
+            android:maxEms="15"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:text="逆鳞"/>
 
-            android:text="TextView"
-            android:textSize="18sp"
-            android:textStyle="normal|bold" />
+        <!--<TextView
+            android:id="@+id/coll_book_tv_lately_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/main_list_title"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/wy.text.common_h2"
+            android:textSize="12sp"
+            android:text="17小时前:"/>-->
+
         <TextView
             android:id="@+id/main_list_chapter"
-            style="@style/Widget.AppCompat.TextView.SpinnerItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textSize="14sp"
+            android:layout_below="@id/main_list_title"
+            android:layout_marginTop="4dp"
             android:ellipsize="end"
-            android:singleLine="true"
-            />
-        <TextView
-            android:id="@+id/main_list_novelid"
-            style="@style/Widget.AppCompat.TextView.SpinnerItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textSize="14sp"
-            android:visibility="gone"
-            />
-        <TextView
-            android:id="@+id/main_list_netid"
-            style="@style/Widget.AppCompat.TextView.SpinnerItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textSize="14sp"
-             android:visibility="gone"
-            />
-    </LinearLayout>
-</LinearLayout>
+            android:maxEms="14"
+            android:maxLines="1"
+            android:textColor="@color/wy.text.common_h2"
+            android:textSize="12sp"
+            android:text="第二卷、逆水行舟！第四百六十五章、打蛇七寸！"/>
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/coll_book_iv_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:src="@mipmap/label_book_top"
+        android:visibility="gone"
+        />
+
+    <ImageView
+        android:id="@+id/coll_book_iv_red_rot"
+        android:layout_width="4dp"
+        android:layout_height="4dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dp"
+        android:src="@mipmap/reader_topic_dot"
+        android:visibility="visible"
+        />
+
+    <TextView
+        android:id="@+id/main_list_novelid"
+        style="@style/Widget.AppCompat.TextView.SpinnerItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="14sp"
+        android:visibility="gone"
+        />
+    <TextView
+        android:id="@+id/main_list_netid"
+        style="@style/Widget.AppCompat.TextView.SpinnerItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="14sp"
+        android:visibility="gone"
+        />
+</RelativeLayout>

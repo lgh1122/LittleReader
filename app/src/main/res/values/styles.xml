@@ -20,4 +20,35 @@
 
     <style name="AppTheme.PopupOverlaySearch" parent="Theme.AppCompat.NoActionBar" />
 
+
+    <!--book_detail-->
+
+    <style name="book_detail_51">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+
+        <item name="android:textColor">@color/color_51</item>
+    </style>
+    <style name="book_detail_black">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="book_detail_51.12">
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="book_detail_51.10">
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="book_detail_black.10">
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="book_detail_black.16">
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>

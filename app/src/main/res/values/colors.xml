@@ -7,4 +7,22 @@
     <color name="colorAccent33">#FF4081</color>
     <color name="colorAccent">#FFFFFF</color>
     <color name="color_51">#515151</color>
+
+    <color name="black">#000000</color>
+    <color name="color_e3">#e3e3e3</color>
+    <color name="color_eee">#eeeeee</color>
+    <color name="color_ec4a48">#EC4A48</color>
+    <color name="white">#ffffff</color>
+
+    <!--通用一级标题的颜色-->
+    <color name="wy.text.common_h1">#212121</color>
+    <!--通用二级标题的颜色-->
+    <color name="wy.text.common_h2">#727272</color>
+    <!--通用三级标题的颜色-->
+    <color name="wy.text.common_h3">#B2B2B2</color>
+
+    <!--通用分割线细-->
+    <color name="wy.divider.narrow">#919191</color>
+    <!--通用分割线粗-->
+    <color name="wy.divider.wide">@color/color_eee</color>
 </resources>

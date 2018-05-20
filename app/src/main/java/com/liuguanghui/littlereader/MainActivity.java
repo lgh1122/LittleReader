@@ -9,6 +9,7 @@ import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +32,6 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
@@ -155,10 +155,10 @@ public class MainActivity extends AppCompatActivity {
                                         break;
                                     case 1:
 
-                                        TextView main_list_novelid = (TextView) view.findViewById(R.id.main_list_novelid);
-                                        TextView main_list_netid = (TextView) view.findViewById(R.id.main_list_netid);
-                                        String netId = main_list_netid.getText().toString();
-                                        String novelId = main_list_novelid.getText().toString();
+                                TextView main_list_novelid = (TextView) view.findViewById(R.id.main_list_novelid);
+                                TextView main_list_netid = (TextView) view.findViewById(R.id.main_list_netid);
+                                String netId = main_list_netid.getText().toString();
+                                String novelId = main_list_novelid.getText().toString();
 
                                         new Thread(){
                                             @Override
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                                                             info.setLatestchapterid(vo.getLatestchapterid());
                                                             info.setLatestchaptername(vo.getLatestchaptername());
                                                         }
-                                                        dao.update(vo);
+                                                        dao.update(info);
                                                     }
                                                     handler.sendMessage(message);
                                                 } catch (Exception e) {
@@ -183,16 +183,10 @@ public class MainActivity extends AppCompatActivity {
                                                 }
                                             }
                                         }.start();
-
-
-
-
-
-
                                         Toast.makeText(MainActivity.this,"正在获取书籍详情..."+netId +" "+novelId,Toast.LENGTH_SHORT).show();
-
                                         break;
                                     case 2:
+                                        Log.e("TAG",info.toString());
                                         Toast.makeText(MainActivity.this,"缓存全本",Toast.LENGTH_SHORT).show();
                                         break;
                                     case 3:

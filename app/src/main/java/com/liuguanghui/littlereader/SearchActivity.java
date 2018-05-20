@@ -18,33 +18,24 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liuguanghui.littlereader.adapter.SearchListAdapter;
 import com.liuguanghui.littlereader.dao.NovelInfoVODao;
 import com.liuguanghui.littlereader.dao.SearchHistoryDao;
 import com.liuguanghui.littlereader.pojo.NovelVO;
+import com.liuguanghui.littlereader.util.JsonResult;
+import com.liuguanghui.littlereader.util.SearchResult;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -257,8 +248,8 @@ listBooks.add("杀毒软件");
         // 5). 连接服务器
         connection.connect();
         //得到输出流, 写请求体:name=Tom1&age=11
-        OutputStream os = connection.getOutputStream();
-        String data = "title="+title;
+         OutputStream os = connection.getOutputStream();
+        String data = "q="+title;
         os.write(data.getBytes("utf-8"));
         //发请求并读取服务器返回的数据
         int responseCode = connection.getResponseCode();
@@ -321,9 +312,33 @@ listBooks.add("杀毒软件");
             //联网请求得到jsonString
             try {
                 String jsonString = requestJson(text);
+                JsonResult taotaoResult = JsonResult.formatToPojo(jsonString, SearchResult.class);
+
+                List<NovelVO> list = new ArrayList<NovelVO>();
+                if (taotaoResult.getStatus() == 200) {
+                    SearchResult result = (SearchResult) taotaoResult.getData();
+                    System.out.println();
+
+                    //JSONArray jsonArray = JSONArray.fromObject(result.getItemList().toString());
+
+                    ObjectMapper mapper = new ObjectMapper(); //转换器
+                    for(Object o : result.getItemList()){
+                        String strJson =mapper.writeValueAsString(o); //map转json
+                        System.out.println(strJson); //与之前格式完全相同，说明经过map转换后，信息没有丢失
+                        //测试04：json--对象
+                        NovelVO u=mapper.readValue(strJson, NovelVO.class);
+                        list.add(u);
+                    }
+                    data = list;
+                    //3. 主线程, 更新界面
+                    handler.sendEmptyMessage(WHAT_REQUEST_SUCCESS);//发请求成功的消息
+                    // String jsonR =
+                }else{
+                    handler.sendEmptyMessage(WHAT_REQUEST_NONE);//发送请求失败的消息
+                }
                 //解析成List<ShopInfo>
                 // EUDataGridResult data = new Gson().fromJson(jsonString,);
-                JSONObject jsonObject = new JSONObject(jsonString);
+                /*JSONObject jsonObject = new JSONObject(jsonString);
                 JSONArray jsonArray = jsonObject.getJSONArray("rows");
                 if(jsonArray !=null && jsonArray.length() > 0){
                     GsonBuilder builder = new GsonBuilder();
@@ -339,12 +354,9 @@ listBooks.add("杀毒软件");
                     Gson gson = builder.create();
                     List<NovelVO> list =gson.fromJson(jsonArray.toString(), new TypeToken< List<NovelVO> >(){}.getType());
                     //data = new Gson().fromJson(jsonArray.toString(), new TypeToken<List<NovelVO>>(){}.getType());
-                    data = list;
-                    //3. 主线程, 更新界面
-                    handler.sendEmptyMessage(WHAT_REQUEST_SUCCESS);//发请求成功的消息
-                }else{
-                    handler.sendEmptyMessage(WHAT_REQUEST_NONE);//发送请求失败的消息
-                }
+                    }
+                    */
+
             } catch (Exception e) {
                 e.printStackTrace();
                 handler.sendEmptyMessage(WHAT_REQUEST_ERROR);//发送请求失败的消息

@@ -84,6 +84,9 @@ public class NovelInfoVODao {
 		values.put("isTop", novelInfo.getIsTop());
 	    values.put("latestchapterid", novelInfo.getLatestchapterid());
 		values.put("latestchaptername", novelInfo.getLatestchaptername());
+		if(novelInfo.getImgpath() !=null){
+			values.put("imgpath", novelInfo.getImgpath());
+		}
 
 
 		int updateCount = database.update("tbNovelInfo", values ,
