@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,6 +26,9 @@ import com.liuguanghui.littlereader.dao.SearchHistoryDao;
 import com.liuguanghui.littlereader.pojo.NovelVO;
 import com.liuguanghui.littlereader.util.JsonResult;
 import com.liuguanghui.littlereader.util.SearchResult;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
@@ -48,7 +52,7 @@ public class SearchActivity  extends Activity {
     private ListView search_list_view;
     private ListView search_history_view;
     private TextView search_removehistory;
-    private List<NovelVO> data;
+    private List<NovelVO> data ;
     private SearchListAdapter adapter;
     private NovelInfoVODao dao ;
     private SearchHistoryDao historyDao ;
@@ -59,8 +63,11 @@ public class SearchActivity  extends Activity {
     private ImageView search_search;
     private LayoutInflater mInflater;
     private TagFlowLayout  search_all_book_name;
-
+    private RefreshLayout search_refreshLayout;
     private Handler handler = new SearchHandler();
+    private int page = 1;
+    private int rows = 8;
+    private boolean isHasMore = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,14 +87,14 @@ public class SearchActivity  extends Activity {
         search_back =   (ImageView) findViewById(R.id.search_back);
         search_all_book_name = findViewById(R.id.search_all_book_name); //大家都在搜 流动布局
 
-List<String> listBooks = new ArrayList<>();
-listBooks.add("道");
-listBooks.add("氪金魔主");
-listBooks.add("英雄联盟");
-listBooks.add("七杀影响的");
-listBooks.add("氪对方的族");
-listBooks.add("武道宗师");
-listBooks.add("杀毒软件");
+        List<String> listBooks = new ArrayList<>();
+        listBooks.add("道");
+        listBooks.add("氪金魔主");
+        listBooks.add("英雄联盟");
+        listBooks.add("七杀影响的");
+        listBooks.add("氪对方的族");
+        listBooks.add("武道宗师");
+        listBooks.add("杀毒软件");
         //大家都在搜的书籍
         search_all_book_name.setAdapter(new TagAdapter<String>(listBooks) {
             @Override
@@ -123,7 +130,9 @@ listBooks.add("杀毒软件");
                     }else{
                         historyDao.add(text);
                     }
-
+                    isHasMore = true;
+                    page= 1;
+                    data = new ArrayList<>();
                     //分线程，用于查询书籍书籍从服务器
                     Thread thread = new SearchThread(text);
                     thread.start();
@@ -135,7 +144,33 @@ listBooks.add("杀毒软件");
             }
         });
 
+        search_refreshLayout = (RefreshLayout)findViewById(R.id.search_refreshLayout);
 
+        search_refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                refreshlayout.finishLoadmore(1000);
+            }
+        });
+        search_refreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
+            @Override
+            public void onLoadmore(RefreshLayout refreshlayout) {
+                //content_text_view.setVisibility(View.INVISIBLE);
+                //Toast.makeText(SearchActivity.this,"RefreshLayout onLoadmore" ,Toast.LENGTH_SHORT).show();
+                String text = search_text.getText().toString();
+                if(isHasMore){
+                    page++;
+                    Thread thread = new SearchThread(text);
+                    thread.start();
+                    refreshlayout.finishLoadmore(1000);
+                }else{
+                    Toast.makeText(SearchActivity.this,"没有更多了",Toast.LENGTH_SHORT).show();
+                    refreshlayout.finishLoadmore(0);
+                }
+
+
+            }
+        });
         search_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -227,7 +262,7 @@ listBooks.add("杀毒软件");
      * @return
      * @throws Exception
      */
-    private String requestJson(String title) throws Exception {
+    private String requestJson(String title, int page, int rows) throws Exception {
         String result = null;
         Properties properties = new Properties();
         String path = "";
@@ -237,6 +272,7 @@ listBooks.add("杀毒软件");
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         //1. 得到连接对象
         URL url = new URL(path);
@@ -248,8 +284,8 @@ listBooks.add("杀毒软件");
         // 5). 连接服务器
         connection.connect();
         //得到输出流, 写请求体:name=Tom1&age=11
-         OutputStream os = connection.getOutputStream();
-        String data = "q="+title;
+        OutputStream os = connection.getOutputStream();
+        String data = "q="+title+"&page="+page+"&rows="+rows;
         os.write(data.getBytes("utf-8"));
         //发请求并读取服务器返回的数据
         int responseCode = connection.getResponseCode();
@@ -282,6 +318,7 @@ listBooks.add("杀毒软件");
                         //显示列表
                         adapter  = new SearchListAdapter(SearchActivity.this, data);
                         search_list_view.setAdapter(adapter);
+                        search_list_view.setSelection((page-2)*rows);
                         break;
                     case WHAT_REQUEST_ERROR:
                         ll_search_loading.setVisibility(View.GONE);
@@ -311,14 +348,14 @@ listBooks.add("杀毒软件");
         public void run() {
             //联网请求得到jsonString
             try {
-                String jsonString = requestJson(text);
+                String jsonString = requestJson(text,page,rows);
                 JsonResult taotaoResult = JsonResult.formatToPojo(jsonString, SearchResult.class);
-
-                List<NovelVO> list = new ArrayList<NovelVO>();
                 if (taotaoResult.getStatus() == 200) {
                     SearchResult result = (SearchResult) taotaoResult.getData();
                     System.out.println();
-
+if(result.getPageCount() == result.getCurPage()){
+    isHasMore = false;
+}
                     //JSONArray jsonArray = JSONArray.fromObject(result.getItemList().toString());
 
                     ObjectMapper mapper = new ObjectMapper(); //转换器
@@ -327,9 +364,10 @@ listBooks.add("杀毒软件");
                         System.out.println(strJson); //与之前格式完全相同，说明经过map转换后，信息没有丢失
                         //测试04：json--对象
                         NovelVO u=mapper.readValue(strJson, NovelVO.class);
-                        list.add(u);
+                        data.add(u);
                     }
-                    data = list;
+                    Log.e("DEBUG","查询的是第"+page+"页");
+                    Log.e("DEBUG",result.getItemList().toString());
                     //3. 主线程, 更新界面
                     handler.sendEmptyMessage(WHAT_REQUEST_SUCCESS);//发请求成功的消息
                     // String jsonR =
