@@ -37,7 +37,10 @@
         </activity>
         <activity android:name=".RefreshActivity" />
         <activity android:name=".RefreshHeaderActivity" />
-        <activity android:name=".NovelDetailActivity" />
+        <activity
+            android:name=".NovelDetailActivity"
+            android:label="书籍详情"
+            />
         <activity android:name=".HelloCameraActivity"></activity>
     </application>
 
