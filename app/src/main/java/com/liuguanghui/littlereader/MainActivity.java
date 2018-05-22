@@ -260,7 +260,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intentAdd);
                 break;
             case R.id.action_settings:
-                Toast.makeText(MainActivity.this, "设置", Toast.LENGTH_SHORT).show();
+                Intent intentDetaile = new Intent(this,NovelDetailActivity.class);
+                startActivity(intentDetaile);
+                //Toast.makeText(MainActivity.this, "设置", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;

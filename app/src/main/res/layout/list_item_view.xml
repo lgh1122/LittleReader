@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/selector_common_bg">
     <ImageView
-        android:id="@+id/main_list_image"
+        android:id="@+id/detail_content_image"
         android:layout_width="45dp"
         android:layout_height="60dp"
         android:layout_alignParentLeft="true"
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_margin="10dp"
-        android:layout_toRightOf="@+id/main_list_image"
+        android:layout_toRightOf="@+id/detail_content_image"
         android:orientation="vertical">
 
         <TextView

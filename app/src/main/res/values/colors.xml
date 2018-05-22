@@ -9,10 +9,12 @@
     <color name="color_51">#515151</color>
 
     <color name="black">#000000</color>
+    <color name="author_color">#ECA275</color>
     <color name="color_e3">#e3e3e3</color>
     <color name="color_eee">#eeeeee</color>
     <color name="color_ec4a48">#EC4A48</color>
     <color name="white">#ffffff</color>
+    <color name="detail_book">#AAAAAA</color>
 
     <!--通用一级标题的颜色-->
     <color name="wy.text.common_h1">#212121</color>

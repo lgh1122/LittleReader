@@ -33,8 +33,12 @@
                 android:value="com.liuguanghui.littlereader.MainActivity" />
         </activity>
         <activity android:name=".RefreshActivity" />
-        <activity android:name=".RefreshHeaderActivity" />
-        <activity android:name=".NovelDetailActivity"></activity>
+        <activity android:name=".RefreshHeaderActivity"  />
+        <activity
+            android:name=".NovelDetailActivity"
+            android:label="书籍详情"
+
+            ></activity>
     </application>
 
 </manifest>

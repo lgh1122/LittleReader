@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
     <ImageView
-        android:id="@+id/main_list_image"
+        android:id="@+id/detail_content_image"
         android:layout_width="50dp"
         android:layout_height="70dp"
         android:src="@mipmap/ic_launcher"

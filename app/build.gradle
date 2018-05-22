@@ -44,6 +44,11 @@ dependencies {
     //没有使用特殊Header，可以不加这行
     compile 'com.github.recruit-lifestyle:WaveSwipeRefreshLayout:1.6'
     compile 'com.hyman:flowlayout-lib:1.1.2'
+    /**
+     * extextview textview折叠
+     * extextview           : "1.0.2"
+     */
+    implementation "com.lcodecorex:extextview:1.0.2"
     implementation files('libs/jackson-core-2.4.2.jar')
     implementation files('libs/jackson-databind-2.4.2.jar')
     implementation files('libs/gson-2.1.jar')

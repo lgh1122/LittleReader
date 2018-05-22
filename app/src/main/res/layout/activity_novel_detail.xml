@@ -6,4 +6,134 @@
     android:layout_height="match_parent"
     tools:context="com.liuguanghui.littlereader.NovelDetailActivity">
 
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+                <ImageView
+                    android:id="@+id/iv_book_image"
+                    android:layout_width="65dp"
+                    android:layout_height="87dp"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/ic_launcher"
+                    android:transitionName="bookImage"/>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@+id/iv_book_image"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_book_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="70dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="反叛的大魔王"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/ctv_book_author"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="赵青山"
+                            android:textColor="#ECA275"
+                            android:textSize="12sp"/>
+
+                        <TextView
+                            android:id="@+id/tv_book_classify"
+                            style="@style/book_detail_51.12"
+                            android:text="  |  都市"/>
+
+                    </LinearLayout>
+
+
+                    <TextView
+                        android:id="@+id/tv_word_updatetime"
+                        style="@style/book_detail_51.12"
+                        android:layout_marginTop="6dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="连载  |  37分钟前"
+                        />
+                </LinearLayout>
+
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+
+                <Button
+                    android:id="@+id/button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@android:color/white"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="5dp"
+                    android:text="加入书架"
+                    android:background="@color/author_color"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="开始阅读"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="5dp"
+                    android:textColor="@android:color/white"
+                    android:background="@android:color/holo_red_dark"
+                     />
+            </LinearLayout>
+
+            <include layout="@layout/line_horizontal"/>
+            <com.lcodecore.extextview.ExpandTextView
+                android:id="@+id/tv_book_brief"
+                style="@style/book_detail_51.12"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="10dp"
+
+                android:layout_marginTop="10dp"
+                android:lineSpacingExtra="4dp"
+                android:text="发挥第三方空间都是开发商佛山地块附近的飞机螺丝钉机发牢骚附近立法监督法律解释法律监督了"
+                app:arrowAlign="right"
+                app:arrowPadding="8dp"
+                app:arrowPosition="below"
+                app:maxCollapsedLines="3"
+                />
+
+            <include layout="@layout/line_horizontal"/>
+
+
+
+        </LinearLayout>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>

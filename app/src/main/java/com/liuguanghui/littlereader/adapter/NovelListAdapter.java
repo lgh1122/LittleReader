@@ -64,7 +64,7 @@ public class NovelListAdapter  extends BaseAdapter {
 
         //获取布局控件
         //得到子View对象
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.main_list_image);
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.detail_content_image);
         TextView titleTV = (TextView) convertView.findViewById(R.id.main_list_title);
         TextView chapterTV = (TextView) convertView.findViewById(R.id.main_list_chapter);
         TextView main_list_novelid = (TextView) convertView.findViewById(R.id.main_list_novelid);
