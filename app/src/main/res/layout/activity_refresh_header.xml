@@ -6,22 +6,29 @@
     android:layout_height="match_parent"
     tools:context="com.liuguanghui.littlereader.RefreshHeaderActivity">
 
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/content_refreshHeaderLayout"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-      <!--  <com.scwang.smartrefresh.layout.header.ClassicsHeader
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+         >
+
+        <com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/content_refreshHeaderLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="我就是boos要求加上的广告条啦"
-           />-->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:gravity="center"
-            android:background="#444"
-            android:textColor="#fff"
-            android:text="看看我会不会变成Header"/>
+            android:layout_height="wrap_content">
+            <!--  <com.scwang.smartrefresh.layout.header.ClassicsHeader
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:text="我就是boos要求加上的广告条啦"
+                 />-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:gravity="center"
+                android:background="#444"
+                android:textColor="#fff"
+                android:text="看看我会不会变成Header"/>
             <TextView
                 android:id="@+id/content_text_view"
                 android:layout_width="match_parent"
@@ -33,6 +40,15 @@
 
 
 
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button"
+            android:onClick="openCamera"/>
+
+
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
