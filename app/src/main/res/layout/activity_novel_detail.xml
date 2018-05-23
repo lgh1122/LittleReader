@@ -8,8 +8,10 @@
 
 
     <ScrollView
+        android:id="@+id/sv_book_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         >
 
         <LinearLayout
@@ -59,7 +61,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/ctv_book_author"
+                            android:id="@+id/tv_book_author"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="赵青山"
@@ -67,7 +69,7 @@
                             android:textSize="12sp"/>
 
                         <TextView
-                            android:id="@+id/tv_book_classify"
+                            android:id="@+id/tv_book_type"
                             style="@style/book_detail_51.12"
                             android:text="  |  都市"/>
 
@@ -116,7 +118,7 @@
 
             <include layout="@layout/line_horizontal"/>
             <com.lcodecore.extextview.ExpandTextView
-                android:id="@+id/tv_book_brief"
+                android:id="@+id/tv_book_desc"
                 style="@style/book_detail_51.12"
                 android:layout_width="match_parent"
                 android:layout_marginBottom="10dp"
@@ -136,4 +138,12 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
 </android.support.constraint.ConstraintLayout>

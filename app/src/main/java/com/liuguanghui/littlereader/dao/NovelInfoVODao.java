@@ -44,7 +44,10 @@ public class NovelInfoVODao {
 		values.put("introduction", novelInfo.getIntroduction());
 		values.put("latestchapterid", novelInfo.getLatestchapterid());
 		values.put("latestchaptername", novelInfo.getLatestchaptername());
-		values.put("updatetime", novelInfo.getUpdatetime().getTime());
+		if( novelInfo.getUpdatetime()!=null){
+			values.put("updatetime", novelInfo.getUpdatetime().getTime());
+		}
+
 		values.put("status", novelInfo.getStatus());
 		//SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		values.put("readDate", novelInfo.getReadDate());

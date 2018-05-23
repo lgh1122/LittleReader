@@ -24,18 +24,11 @@ import com.liuguanghui.littlereader.dao.NovelInfoVODao;
 import com.liuguanghui.littlereader.pojo.NovelVO;
 import com.liuguanghui.littlereader.util.CommonUtil;
 import com.liuguanghui.littlereader.util.ImageLoader;
-import com.liuguanghui.littlereader.util.JsonResult;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
-import java.util.Properties;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,14 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     exits = false;
                     break;
-                case  2:
-                    NovelVO vo = (NovelVO) msg.obj;
-                    if(vo != null&& vo.getImgpath()!=null){
 
-                        CommonUtil.sortDesc(novelInfos);
-                        adapter.notifyDataSetChanged();
-                    }
-                    break;
                 default:
                     break;
 
@@ -159,30 +145,11 @@ public class MainActivity extends AppCompatActivity {
                                 TextView main_list_netid = (TextView) view.findViewById(R.id.main_list_netid);
                                 String netId = main_list_netid.getText().toString();
                                 String novelId = main_list_novelid.getText().toString();
+                                        Intent intent = new Intent(MainActivity.this,NovelDetailActivity.class);
+                                        intent.putExtra("netId" ,netId);
+                                        intent.putExtra("novelId" ,novelId);
+                                        startActivity(intent);
 
-                                        new Thread(){
-                                            @Override
-                                            public void run() {
-                                                try {
-                                                    NovelVO  vo =  MainActivity.this.requestNovelVo(netId,novelId);
-                                                    Message message = Message.obtain();
-                                                    message.what = 2;//标识
-                                                    message.obj = vo;
-                                                    if(vo != null&& vo.getImgpath()!=null){
-
-                                                        info.setImgpath(vo.getImgpath());
-                                                        if(vo.getLatestchapterid() > info.getLatestchapterid()){
-                                                            info.setLatestchapterid(vo.getLatestchapterid());
-                                                            info.setLatestchaptername(vo.getLatestchaptername());
-                                                        }
-                                                        dao.update(info);
-                                                    }
-                                                    handler.sendMessage(message);
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        }.start();
                                         Toast.makeText(MainActivity.this,"正在获取书籍详情..."+netId +" "+novelId,Toast.LENGTH_SHORT).show();
                                         break;
                                     case 2:
@@ -271,60 +238,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * 联网请求得到jsonString
-     * @return
-     * @throws Exception
-     */
-    private   NovelVO requestNovelVo(String netId,String novelId) throws Exception {
-        String result = null;
-        Properties properties = new Properties();
-        String path = "";
-        NovelVO novelVO = null;
-        try {
-            properties.load(getAssets().open("my.properties"));
-            path = properties.getProperty("novel_info_url");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        //1. 得到连接对象
-        URL url = new URL(path+"/"+netId+"/"+novelId);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        // 4). 设置请求方式,连接超时, 读取数据超时
-        connection.setRequestMethod("POST");
-        connection.setConnectTimeout(10000);
-        connection.setReadTimeout(20000);
-        // 5). 连接服务器
-        connection.connect();
-        //得到输出流, 写请求体:name=Tom1&age=11
-
-
-        //发请求并读取服务器返回的数据
-        int responseCode = connection.getResponseCode();
-        if(responseCode==200) {
-            InputStream is = connection.getInputStream();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int len = -1;
-            while ((len = is.read(buffer)) != -1) {
-                baos.write(buffer, 0, len);
-            }
-            baos.close();
-            is.close();
-            connection.disconnect();
-            result = baos.toString();
-            if(result !=null && !"".equals(result)){
-                JsonResult jsonResult =   JsonResult.formatToPojo(result,NovelVO.class);
-                if(jsonResult.getStatus() == 200){
-                    novelVO = (NovelVO) jsonResult.getData();
-                }
-            }
-        } else {
-            //也可以抛出运行时异常
-        }
-        return novelVO;
-    }
 
 
 }

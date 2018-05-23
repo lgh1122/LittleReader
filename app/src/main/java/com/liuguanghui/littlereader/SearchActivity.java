@@ -19,11 +19,13 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liuguanghui.littlereader.adapter.SearchListAdapter;
 import com.liuguanghui.littlereader.dao.NovelInfoVODao;
 import com.liuguanghui.littlereader.dao.SearchHistoryDao;
 import com.liuguanghui.littlereader.pojo.NovelVO;
+import com.liuguanghui.littlereader.util.HttpClientUtil;
 import com.liuguanghui.littlereader.util.JsonResult;
 import com.liuguanghui.littlereader.util.SearchResult;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -33,12 +35,7 @@ import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -262,7 +259,7 @@ public class SearchActivity  extends Activity {
      * @return
      * @throws Exception
      */
-    private String requestJson(String title, int page, int rows) throws Exception {
+    private String requestNovelJson(String q, int page, int rows) throws Exception {
         String result = null;
         Properties properties = new Properties();
         String path = "";
@@ -272,38 +269,11 @@ public class SearchActivity  extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-        //1. 得到连接对象
-        URL url = new URL(path);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        // 4). 设置请求方式,连接超时, 读取数据超时
-        connection.setRequestMethod("POST");
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
-        // 5). 连接服务器
-        connection.connect();
-        //得到输出流, 写请求体:name=Tom1&age=11
-        OutputStream os = connection.getOutputStream();
-        String data = "q="+title+"&page="+page+"&rows="+rows;
-        os.write(data.getBytes("utf-8"));
-        //发请求并读取服务器返回的数据
-        int responseCode = connection.getResponseCode();
-        if(responseCode==200) {
-            InputStream is = connection.getInputStream();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int len = -1;
-            while ((len = is.read(buffer)) != -1) {
-                baos.write(buffer, 0, len);
-            }
-            baos.close();
-            is.close();
-            connection.disconnect();
-            result = baos.toString();
-        } else {
-            //也可以抛出运行时异常
-        }
+        Map<String,String> param = new HashMap<>();
+        param.put("q",q);
+        param.put("page",page+"");
+        param.put("rows",rows+"");
+        result = HttpClientUtil.httpPost(path,param);
         return result;
     }
 
@@ -348,26 +318,24 @@ public class SearchActivity  extends Activity {
         public void run() {
             //联网请求得到jsonString
             try {
-                String jsonString = requestJson(text,page,rows);
+                String jsonString = requestNovelJson(text,page,rows);
                 JsonResult taotaoResult = JsonResult.formatToPojo(jsonString, SearchResult.class);
                 if (taotaoResult.getStatus() == 200) {
                     SearchResult result = (SearchResult) taotaoResult.getData();
                     System.out.println();
-if(result.getPageCount() == result.getCurPage()){
-    isHasMore = false;
-}
-                    //JSONArray jsonArray = JSONArray.fromObject(result.getItemList().toString());
-
-                    ObjectMapper mapper = new ObjectMapper(); //转换器
-                    for(Object o : result.getItemList()){
-                        String strJson =mapper.writeValueAsString(o); //map转json
-                        System.out.println(strJson); //与之前格式完全相同，说明经过map转换后，信息没有丢失
-                        //测试04：json--对象
-                        NovelVO u=mapper.readValue(strJson, NovelVO.class);
-                        data.add(u);
+                    if(result.getPageCount() == result.getCurPage()){
+                        isHasMore = false;
                     }
+                    //JSONArray jsonArray = JSONArray.fromObject(result.getItemList().toString());
+                    ObjectMapper mapper = new ObjectMapper( );
+
+                    String jsonStr = mapper.writeValueAsString(result.getItemList());
+		            List<NovelVO> novelChild = mapper.reader().withType(new TypeReference<List<NovelVO>>() {})
+		            .readValue(jsonStr);
+                    //List novelChild = JsonResult.formatToChildList(result.getItemList(),NovelVO.class);
+                    data.addAll(novelChild);
                     Log.e("DEBUG","查询的是第"+page+"页");
-                    Log.e("DEBUG",result.getItemList().toString());
+                    //Log.e("DEBUG",result.getItemList().toString());
                     //3. 主线程, 更新界面
                     handler.sendEmptyMessage(WHAT_REQUEST_SUCCESS);//发请求成功的消息
                     // String jsonR =

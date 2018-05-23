@@ -147,4 +147,20 @@ public class JsonResult {
         }
     }
 
+    public static List formatToChildList(List list ,Class clazz){
+        try {
+            String jsonStr = MAPPER.writeValueAsString(list);
+            JsonNode jsonNode = MAPPER.readTree(jsonStr);
+            JsonNode data = jsonNode.get("data");
+            Object obj = null;
+            if (data.isArray() && data.size() > 0) {
+                obj = MAPPER.readValue(data.traverse(),
+                        MAPPER.getTypeFactory().constructCollectionType(List.class, clazz));
+            }
+            return (List) obj;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }
