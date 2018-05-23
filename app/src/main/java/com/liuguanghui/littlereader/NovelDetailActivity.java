@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ public class NovelDetailActivity extends AppCompatActivity {
 
 
     private ScrollView sv_book_view;
+    private ProgressBar pg_book_bar;
     private ImageView iv_book_image;
     private TextView tv_book_name;
     private TextView tv_book_author;
@@ -43,6 +45,7 @@ public class NovelDetailActivity extends AppCompatActivity {
                     if(novelVO==null){
                         break;
                     }
+                    pg_book_bar.setVisibility(View.GONE);
                     sv_book_view.setVisibility(View.VISIBLE);
                     tv_book_author.setText(novelVO.getAuthor());
                     tv_book_desc.setText(novelVO.getIntroduction());
@@ -72,6 +75,7 @@ public class NovelDetailActivity extends AppCompatActivity {
         private ExpandTextView ;*/
 
         sv_book_view = findViewById(R.id.sv_book_view);
+        pg_book_bar = findViewById(R.id.pg_book_bar);
         iv_book_image = findViewById(R.id.iv_book_image);
         tv_book_name = findViewById(R.id.tv_book_name);
         tv_book_author = findViewById(R.id.tv_book_author);
