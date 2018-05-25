@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -22,18 +25,20 @@ import com.liuguanghui.littlereader.util.JsonResult;
 import java.io.IOException;
 import java.util.Properties;
 
-public class NovelDetailActivity extends AppCompatActivity {
+public class NovelDetailActivity extends AppCompatActivity implements View.OnClickListener {
 
 
 
-    private ScrollView sv_book_view;
+    private LinearLayout ll_book_view;
     private ProgressBar pg_book_bar;
     private ImageView iv_book_image;
     private TextView tv_book_name;
     private TextView tv_book_author;
     private TextView tv_book_type;
     private ExpandTextView tv_book_desc;
+    private Button bt_book_addStore;
 
+    private NovelVO novelVO;
     private NovelInfoVODao dao ;
     private Handler handler = new Handler(){
         @Override
@@ -41,16 +46,29 @@ public class NovelDetailActivity extends AppCompatActivity {
             int what = msg.what;
             switch (what){
                 case 1:
-                    NovelVO novelVO = (NovelVO) msg.obj;
+                    novelVO = (NovelVO) msg.obj;
                     if(novelVO==null){
                         break;
                     }
                     pg_book_bar.setVisibility(View.GONE);
-                    sv_book_view.setVisibility(View.VISIBLE);
+                    ll_book_view.setVisibility(View.VISIBLE);
                     tv_book_author.setText(novelVO.getAuthor());
                     tv_book_desc.setText(novelVO.getIntroduction());
                     tv_book_type.setText(novelVO.getTname());
                     tv_book_name.setText(novelVO.getTitle());
+                    break;
+                case 2:
+                    novelVO = (NovelVO) msg.obj;
+                    if(novelVO==null){
+                        break;
+                    }
+                    pg_book_bar.setVisibility(View.GONE);
+                    ll_book_view.setVisibility(View.VISIBLE);
+                    tv_book_author.setText(novelVO.getAuthor());
+                    tv_book_desc.setText(novelVO.getIntroduction());
+                    tv_book_type.setText(novelVO.getTname());
+                    tv_book_name.setText(novelVO.getTitle());
+                    bt_book_addStore.setText("移除书架");
                     break;
                 default:
                     break;
@@ -74,13 +92,14 @@ public class NovelDetailActivity extends AppCompatActivity {
         private TextView ;
         private ExpandTextView ;*/
 
-        sv_book_view = findViewById(R.id.sv_book_view);
+        ll_book_view = findViewById(R.id.ll_book_view);
         pg_book_bar = findViewById(R.id.pg_book_bar);
         iv_book_image = findViewById(R.id.iv_book_image);
         tv_book_name = findViewById(R.id.tv_book_name);
         tv_book_author = findViewById(R.id.tv_book_author);
         tv_book_type = findViewById(R.id.tv_book_type);
         tv_book_desc = findViewById(R.id.tv_book_desc);
+        bt_book_addStore = findViewById(R.id.bt_book_addStore);
         dao = new NovelInfoVODao(NovelDetailActivity.this);
 
         // 得到intent 对象
@@ -88,16 +107,30 @@ public class NovelDetailActivity extends AppCompatActivity {
         String netId = intent.getStringExtra("netId");
         String novelId = intent.getStringExtra("novelId");
 
+
+        bt_book_addStore.setOnClickListener(this);
+
         new Thread(){
             @Override
             public void run() {
                 try {
-                    NovelVO vo =   NovelDetailActivity.this.requestNovelVo(netId,novelId);
+                    NovelVO localNovelVO = dao.getNovelVO(Long.parseLong(netId),Long.parseLong(novelId));
                     Message message = Message.obtain();
-                    message.what = 1;//标识
-                    message.obj = vo;
-                    if(vo != null&& vo.getImgpath()!=null){
-                        dao.update(vo);
+                    if(localNovelVO!=null){
+                        if(localNovelVO.getIntroduction()!=null&&localNovelVO.getImgpath()!=null){
+
+                        }else{
+                            NovelVO  vo =   NovelDetailActivity.this.requestNovelVo(netId,novelId);
+                            localNovelVO.setIntroduction(vo.getIntroduction());
+                            localNovelVO.setImgpath(vo.getImgpath());
+                            dao.update(localNovelVO);
+                        }
+                        message.what = 2;//标识
+                        message.obj = localNovelVO;
+                    }else{
+                        NovelVO  vo =   NovelDetailActivity.this.requestNovelVo(netId,novelId);
+                        message.what = 1;//标识
+                        message.obj = vo;
                     }
                     handler.sendMessage(message);
                 } catch (Exception e) {
@@ -146,4 +179,24 @@ public class NovelDetailActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bt_book_addStore:
+              String btName =   bt_book_addStore.getText().toString();
+                if("加入书架".equals(btName)){
+                    novelVO.setReadDate(SystemClock.currentThreadTimeMillis());
+                    bt_book_addStore.setText("移除书架");
+                    dao.add(novelVO);
+                }else{
+                    bt_book_addStore.setText("加入书架");
+                    dao.deleteById(novelVO);
+                }
+                break;
+            default:
+                break;
+        }
+
+
+    }
 }

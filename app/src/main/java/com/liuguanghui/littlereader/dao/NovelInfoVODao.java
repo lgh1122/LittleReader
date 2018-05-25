@@ -90,6 +90,9 @@ public class NovelInfoVODao {
 		if(novelInfo.getImgpath() !=null){
 			values.put("imgpath", novelInfo.getImgpath());
 		}
+		if(novelInfo.getIntroduction()!=null){
+			values.put("introduction", novelInfo.getIntroduction());
+		}
 
 
 		int updateCount = database.update("tbNovelInfo", values ,
@@ -166,7 +169,7 @@ public class NovelInfoVODao {
 			d.setTime(l);
 			novel.setUpdatetime(d);
 			novel.setStatus((byte) cursor.getInt(cursor.getColumnIndex("status")));
-			novel.setIntroduction(cursor.getString(cursor.getColumnIndex("introduction")));
+		/*	novel.setIntroduction(cursor.getString(cursor.getColumnIndex("introduction")));*/
 			novel.setImgpath(cursor.getString(cursor.getColumnIndex("imgpath")));
 			novel.setIsTop(cursor.getInt(cursor.getColumnIndex("isTop")));
 			novel.setReadDate(cursor.getLong(cursor.getColumnIndex("readDate")));

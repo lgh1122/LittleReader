@@ -25,6 +25,7 @@ import com.liuguanghui.littlereader.adapter.SearchListAdapter;
 import com.liuguanghui.littlereader.dao.NovelInfoVODao;
 import com.liuguanghui.littlereader.dao.SearchHistoryDao;
 import com.liuguanghui.littlereader.pojo.NovelVO;
+import com.liuguanghui.littlereader.util.CommonUtil;
 import com.liuguanghui.littlereader.util.HttpClientUtil;
 import com.liuguanghui.littlereader.util.JsonResult;
 import com.liuguanghui.littlereader.util.SearchResult;
@@ -175,6 +176,19 @@ public class SearchActivity  extends Activity {
                 startActivity(i);
             }
         });
+
+        //添加点击监听时间
+        search_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                NovelVO info = data.get(position);
+                Intent intent = new Intent(SearchActivity.this,NovelDetailActivity.class);
+                intent.putExtra("netId" ,info.getNetid()+"");
+                intent.putExtra("novelId" ,info.getId()+"");
+                startActivity(intent);
+            }
+        });
+
         search_list_view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
