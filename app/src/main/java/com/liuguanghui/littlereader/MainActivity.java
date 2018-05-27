@@ -104,11 +104,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 NovelVO info = novelInfos.get(position);
-                Toast.makeText(MainActivity.this,info.getTitle(),Toast.LENGTH_SHORT).show();;
+                //Toast.makeText(MainActivity.this,info.getTitle(),Toast.LENGTH_SHORT).show();;
                 info.setReadDate(SystemClock.currentThreadTimeMillis());
                 dao.update(info);
                 CommonUtil.sortDesc(novelInfos);
                 adapter.notifyDataSetChanged();
+                Intent intent = new Intent(MainActivity.this,NovelReadActivity.class);
+               /* intent.putExtra("netId" ,netId);
+                intent.putExtra("novelId" ,novelId);*/
+                startActivity(intent);
             }
         });
 

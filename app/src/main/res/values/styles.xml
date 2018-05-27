@@ -51,4 +51,20 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="book_detail_black.ReadMenu">
+        <item name="android:textColor">@color/color_cb</item>
+        <item name="android:textSize">@dimen/wy.read.text.bottom</item>
+    </style>
+    <style name="book_detail_black.BottomMenu">
+        <item name="android:textColor">@color/color_cb</item>
+        <item name="android:textSize">@dimen/wy.read.text.bottom</item>
+    </style>
+    <style name="WY.Theme.TextAppearance.Read.BottomMenu.Button"
+        parent="book_detail_black.BottomMenu">
+        <item name="android:gravity">center_horizontal|bottom</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
 </resources>
