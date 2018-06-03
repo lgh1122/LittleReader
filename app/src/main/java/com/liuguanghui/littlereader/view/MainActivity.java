@@ -1,4 +1,4 @@
-package com.liuguanghui.littlereader;
+package com.liuguanghui.littlereader.view;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,9 +19,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.liuguanghui.littlereader.R;
 import com.liuguanghui.littlereader.adapter.NovelListAdapter;
-import com.liuguanghui.littlereader.dao.NovelInfoVODao;
-import com.liuguanghui.littlereader.pojo.NovelVO;
+import com.liuguanghui.littlereader.db.entity.NovelBean;
+import com.liuguanghui.littlereader.db.helper.NovelHelper;
 import com.liuguanghui.littlereader.util.CommonUtil;
 import com.liuguanghui.littlereader.util.ImageLoader;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -33,14 +34,16 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private ListView content_list_view;
-    private List<NovelVO> novelInfos;
+    private List<NovelBean> novelInfos;
     private NovelListAdapter adapter;
-    private NovelInfoVODao dao ;
+    //private NovelInfoVODao dao ;
+    private NovelHelper novelHelper;
     private TextView content_text_view;
 
     private ImageLoader imageLoader;
     private  RefreshLayout refreshLayout;
 
+    private  int index = 0;
     private boolean exits = false;
     private Handler handler = new Handler(){
         @Override
@@ -50,6 +53,15 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     exits = false;
                     break;
+                case 2:
+                    Log.i("TestHandle ","Test time do something start");
+                    int obj = (int) msg.obj;
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Log.i("TestHandle ","Test time do something end index = "+index);
 
                 default:
                     break;
@@ -74,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             public void onRefresh(RefreshLayout refreshlayout) {
                 content_text_view.setVisibility(View.VISIBLE);
                 refreshlayout.finishRefresh(2000);
-                novelInfos = dao.getAll();
+                novelInfos = novelHelper.findAllBooks();
                 adapter.setAppInfos(novelInfos);
                 adapter.notifyDataSetChanged();
                 content_text_view.setVisibility(View.GONE);
@@ -90,9 +102,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         content_list_view = findViewById(R.id.content_list_view);
-        dao = new NovelInfoVODao(MainActivity.this);
+        novelHelper = NovelHelper.getsInstance();
         // 获取书籍列表数据
-        novelInfos = dao.getAll();
+        novelInfos = novelHelper.findAllBooks();
         imageLoader = new ImageLoader(MainActivity.this,R.mipmap.loading,R.mipmap.error);
         adapter  = new NovelListAdapter(MainActivity.this, novelInfos,imageLoader);
 
@@ -103,16 +115,28 @@ public class MainActivity extends AppCompatActivity {
         content_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                NovelVO info = novelInfos.get(position);
+                NovelBean info = novelInfos.get(position);
                 //Toast.makeText(MainActivity.this,info.getTitle(),Toast.LENGTH_SHORT).show();;
-                info.setReadDate(SystemClock.currentThreadTimeMillis());
-                dao.update(info);
+                 info.setReadDate(SystemClock.currentThreadTimeMillis());
+                novelHelper.saveBook(info);
                 CommonUtil.sortDesc(novelInfos);
                 adapter.notifyDataSetChanged();
                 Intent intent = new Intent(MainActivity.this,NovelReadActivity.class);
+                startActivity(intent);
+                Log.i("TestHandle","Test Start "+ String.valueOf(System.currentTimeMillis()));
+                /*Message testMsg = Message.obtain();
+                testMsg.what = 2;
+                testMsg.obj =++ index;
+                handler.sendMessage(testMsg);*/
+                /*try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*/
+                Log.i("TestHandle","Test end  "+ String.valueOf(System.currentTimeMillis()));
                /* intent.putExtra("netId" ,netId);
                 intent.putExtra("novelId" ,novelId);*/
-                startActivity(intent);
+
             }
         });
 
@@ -120,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-                final NovelVO info = novelInfos.get(position);
+                final NovelBean info = novelInfos.get(position);
 
                 final String[] items = {info.getIsTop()==1?"取消置顶":"置顶", "书籍详情", "缓存全本", "删除"};
 
@@ -135,10 +159,10 @@ public class MainActivity extends AppCompatActivity {
                                         if("置顶".equals(items[which])){
                                             info.setIsTop(1);
                                             info.setReadDate(SystemClock.currentThreadTimeMillis());
-                                            dao.update(info);
+                                            novelHelper.saveBook(info);
                                         }else{
                                             info.setIsTop(0);
-                                            dao.update(info);
+                                            novelHelper.saveBook(info);
                                         }
                                         CommonUtil.sortDesc(novelInfos);
                                         adapter.notifyDataSetChanged();
@@ -158,10 +182,11 @@ public class MainActivity extends AppCompatActivity {
                                         break;
                                     case 2:
                                         Log.e("TAG",info.toString());
+
                                         Toast.makeText(MainActivity.this,"缓存全本",Toast.LENGTH_SHORT).show();
                                         break;
                                     case 3:
-                                        dao.deleteById(info);
+                                        novelHelper.removeBookInRx(info).subscribe();
                                         novelInfos.remove(info);
                                         adapter.notifyDataSetChanged();
                                         Toast.makeText(MainActivity.this,"删除成功",Toast.LENGTH_SHORT).show();

@@ -1,34 +1,21 @@
 package com.liuguanghui.littlereader.dao;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-
-import com.liuguanghui.littlereader.pojo.NovelVO;
-import com.liuguanghui.littlereader.util.DBNovelVOHelper;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 /**
  * 操作black_number表的DAO类
  *
  */
 public class NovelInfoVODao {
 
-	private DBNovelVOHelper dbHelper;
+	/*private DBNovelVOHelper dbHelper;
 
 	public NovelInfoVODao(Context context) {
 		dbHelper = new DBNovelVOHelper(context);
 	}
-	/**
+	*//**
 	 * 添加一条记录
 	 * @param novelInfo
-	 */
-	public void add(NovelVO novelInfo) {
+	 *//*
+	public void add(NovelBean novelInfo) {
 		//1. 得到连接
 		SQLiteDatabase database = dbHelper.getReadableDatabase();
 		//2. 执行insert insert into black_number (number) values(xxx)
@@ -45,7 +32,7 @@ public class NovelInfoVODao {
 		values.put("latestchapterid", novelInfo.getLatestchapterid());
 		values.put("latestchaptername", novelInfo.getLatestchaptername());
 		if( novelInfo.getUpdatetime()!=null){
-			values.put("updatetime", novelInfo.getUpdatetime().getTime());
+			values.put("updatetime", novelInfo.getUpdatetime());
 		}
 
 		values.put("status", novelInfo.getStatus());
@@ -58,25 +45,25 @@ public class NovelInfoVODao {
 		database.close();
 	}
 
-	/**
+	*//**
 	 * 根据id删除一条记录
-	 */
-	public void deleteById(NovelVO novelVO) {
+	 *//*
+	public void deleteById(NovelBean novelBean) {
 		//1. 得到连接
 		SQLiteDatabase database = dbHelper.getReadableDatabase();
 		//2. 执行delete delete from black_number where _id=id
 		int deleteCount = database.delete("tbNovelInfo", "id=? and netid = ? ",
-				new String[]{novelVO.getId()+"", novelVO.getNetid()+""});
+				new String[]{novelBean.getId()+"", novelBean.getNetid()+""});
 		Log.i("TAG", "deleteCount="+deleteCount);
 		//3. 关闭
 		database.close();
 	}
 
-	/**
+	*//**
 	 * 更新一条记录
 	 * 阅读时间 和 是否置顶
-	 */
-	public void update(NovelVO novelInfo) {
+	 *//*
+	public void update(NovelBean novelInfo) {
 		//1. 得到连接
 		SQLiteDatabase database = dbHelper.getReadableDatabase();
 		//2. 执行update update black_number set number=xxx where _id=id
@@ -103,16 +90,16 @@ public class NovelInfoVODao {
 	}
 
 
-	public NovelVO getNovelVO(long netId ,long novelId){
+	public NovelBean getNovelVO(long netId , long novelId){
 		//1. 得到连接
 		SQLiteDatabase database = dbHelper.getReadableDatabase();
 		//2. 执行query select * from black_number
 		Cursor cursor = database.query("tbNovelInfo", null, " id="+novelId + " and netid =" +netId, null, null,
 				null, "isTop desc , readDate desc ");
 		//3. 从cursor中取出所有数据并封装到List中
-		NovelVO novel = null;
+		NovelBean novel = null;
 		while(cursor.moveToNext()) {
-			novel = new NovelVO();
+			novel = new NovelBean();
 			novel.setId(cursor.getLong(cursor.getColumnIndex("id")));
 			novel.setNetid(cursor.getLong(cursor.getColumnIndex("netid")));
 			novel.setTitle(cursor.getString(cursor.getColumnIndex("title")));
@@ -125,7 +112,7 @@ public class NovelInfoVODao {
 			Long l = cursor.getLong(cursor.getColumnIndex("updatetime"));
 			Date  d = new Date();
 			d.setTime(l);
-			novel.setUpdatetime(d);
+			novel.setUpdatetime(d.getTime());
 			novel.setStatus((byte) cursor.getInt(cursor.getColumnIndex("status")));
 			novel.setIntroduction(cursor.getString(cursor.getColumnIndex("introduction")));
 			novel.setImgpath(cursor.getString(cursor.getColumnIndex("imgpath")));
@@ -139,12 +126,12 @@ public class NovelInfoVODao {
 		return novel;
 	}
 
-	/**
+	*//**
 	 * 查询所有记录封装成List<BLackNumber>
-	 */
-	public List<NovelVO> getAll() {
+	 *//*
+	public List<NovelBean> getAll() {
 
-		List<NovelVO> list = new ArrayList<NovelVO>();
+		List<NovelBean> list = new ArrayList<NovelBean>();
 		//1. 得到连接
 		SQLiteDatabase database = dbHelper.getReadableDatabase();
 		//2. 执行query select * from black_number
@@ -154,7 +141,7 @@ public class NovelInfoVODao {
 				null, "isTop desc , readDate desc ");
 		//3. 从cursor中取出所有数据并封装到List中
 		while(cursor.moveToNext()) {
-			NovelVO novel = new NovelVO();
+			NovelBean novel = new NovelBean();
 			novel.setId(cursor.getLong(cursor.getColumnIndex("id")));
 			novel.setNetid(cursor.getLong(cursor.getColumnIndex("netid")));
 			novel.setTitle(cursor.getString(cursor.getColumnIndex("title")));
@@ -167,9 +154,9 @@ public class NovelInfoVODao {
 			Long l = cursor.getLong(cursor.getColumnIndex("updatetime"));
 			Date  d = new Date();
 			d.setTime(l);
-			novel.setUpdatetime(d);
+			novel.setUpdatetime(d.getTime());
 			novel.setStatus((byte) cursor.getInt(cursor.getColumnIndex("status")));
-		/*	novel.setIntroduction(cursor.getString(cursor.getColumnIndex("introduction")));*/
+		*//*	novel.setIntroduction(cursor.getString(cursor.getColumnIndex("introduction")));*//*
 			novel.setImgpath(cursor.getString(cursor.getColumnIndex("imgpath")));
 			novel.setIsTop(cursor.getInt(cursor.getColumnIndex("isTop")));
 			novel.setReadDate(cursor.getLong(cursor.getColumnIndex("readDate")));
@@ -181,5 +168,5 @@ public class NovelInfoVODao {
 		database.close();
 
 		return list;
-	}
+	}*/
 }

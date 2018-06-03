@@ -6,7 +6,6 @@ import java.math.BigInteger;
 import java.util.List;
 
 import com.fasterxml.jackson.core.Base64Variant;
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonLocation;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -17,7 +16,7 @@ import com.fasterxml.jackson.core.Version;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.liuguanghui.littlereader.pojo.NovelVO;
+import com.liuguanghui.littlereader.db.entity.NovelBean;
 import com.liuguanghui.littlereader.util.JsonResult;
 import com.liuguanghui.littlereader.util.SearchResult;
 
@@ -29,8 +28,8 @@ public class TestNetJson {
 		System.out.println(jsonString);
 		JsonResult jsonResult = JsonResult.formatToPojo(jsonString, SearchResult.class);
 		if(jsonResult.getStatus() == 200) {
-			SearchResult<NovelVO> searchResult = (SearchResult<NovelVO>) jsonResult.getData();
-			List<NovelVO> list  = searchResult.getItemList();
+			SearchResult<NovelBean> searchResult = (SearchResult<NovelBean>) jsonResult.getData();
+			List<NovelBean> list  = searchResult.getItemList();
 			
 			System.out.println(searchResult.getItemList().toString());
 			System.out.println("----------------------");
@@ -48,12 +47,12 @@ public class TestNetJson {
             Object obj = null;
             if (data.isArray() && data.size() > 0) {
                 obj = mapper.readValue(data.traverse(),
-                        mapper.getTypeFactory().constructCollectionType(List.class, NovelVO.class));
+                        mapper.getTypeFactory().constructCollectionType(List.class, NovelBean.class));
             } 
 			
-            List<NovelVO> users = (List<NovelVO>) obj;
+            List<NovelBean> users = (List<NovelBean>) obj;
             
-            for (NovelVO spiderNovel : users) {
+            for (NovelBean spiderNovel : users) {
 				System.out.println(spiderNovel);
 			} 
 		}

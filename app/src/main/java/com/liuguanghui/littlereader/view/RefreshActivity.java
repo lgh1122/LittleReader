@@ -1,8 +1,10 @@
-package com.liuguanghui.littlereader;
+package com.liuguanghui.littlereader.view;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.liuguanghui.littlereader.R;
 
 import jp.co.recruit_lifestyle.android.widget.WaveSwipeRefreshLayout;
 

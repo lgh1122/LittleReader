@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.liuguanghui.littlereader.R;
-import com.liuguanghui.littlereader.pojo.NovelVO;
+import com.liuguanghui.littlereader.db.entity.NovelBean;
 import com.liuguanghui.littlereader.util.ImageLoader;
 
 import java.util.List;
@@ -22,14 +22,14 @@ public class NovelListAdapter  extends BaseAdapter {
     private Context context;
     //布局加载器
     private LayoutInflater mInflater;
-    private List<NovelVO> novelInfos;
+    private List<NovelBean> novelInfos;
     private ImageLoader imageLoader;
     //动态改变appInfos
-    public void setAppInfos(List<NovelVO> novelInfos) {
+    public void setAppInfos(List<NovelBean> novelInfos) {
         this.novelInfos = novelInfos;
     }
 
-    public NovelListAdapter(Context context, List<NovelVO> appInfos, ImageLoader imageLoader) {
+    public NovelListAdapter(Context context, List<NovelBean> appInfos, ImageLoader imageLoader) {
         this.context = context;
         this.novelInfos = appInfos;
         this.imageLoader = imageLoader;
@@ -71,7 +71,7 @@ public class NovelListAdapter  extends BaseAdapter {
         TextView main_list_netid = (TextView) convertView.findViewById(R.id.main_list_netid);
 
         //获取position位置上的AppInfo对象
-        NovelVO novelInfo = novelInfos.get(position);
+        NovelBean novelInfo = novelInfos.get(position);
         if(novelInfo.getImgpath() != null && !"".equals(novelInfo.getImgpath())){
             imageLoader.loadImage(novelInfo.getImgpath(),imageView) ;
         }else{

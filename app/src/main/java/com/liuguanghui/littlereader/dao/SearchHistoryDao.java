@@ -1,31 +1,19 @@
 package com.liuguanghui.littlereader.dao;
 
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.SystemClock;
-import android.util.Log;
-
-import com.liuguanghui.littlereader.util.DBNovelVOHelper;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 操作tbNovelSearchHistory表的DAO类
  */
 public class SearchHistoryDao {
 
-	private DBNovelVOHelper dbHelper;
+	/*private DBNovelVOHelper dbHelper;
 
 	public SearchHistoryDao(Context context) {
 		dbHelper = new DBNovelVOHelper(context);
 	}
-	/**
+	*//**
 	 * 添加一条记录
 	 * @param searchStr
-	 */
+	 *//*
 	public void add(String searchStr) {
 		//1. 得到连接
 		SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -39,9 +27,9 @@ public class SearchHistoryDao {
 		database.close();
 	}
 
-	/**
+	*//**
 	 * 清空搜索历史
-	 */
+	 *//*
 	public void deleteAll() {
 		//1. 得到连接
 		SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -53,10 +41,10 @@ public class SearchHistoryDao {
 		database.close();
 	}
 
-	/**
+	*//**
 	 * 更新一条记录
 	 * 阅读时间 和 是否置顶
-	 */
+	 *//*
 	public void update(String str) {
 		//1. 得到连接
 		SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -71,9 +59,9 @@ public class SearchHistoryDao {
 	}
 
 
-	/**
+	*//**
 	 * 查询所有记录封装成List<BLackNumber>
-	 */
+	 *//*
 	public  String getHistory(String str ) {
 
 
@@ -95,9 +83,9 @@ public class SearchHistoryDao {
 		return  keyword;
 	}
 
-	/**
+	*//**
 	 * 查询所有记录封装成List<BLackNumber>
-	 */
+	 *//*
 	public List<String> getAll() {
 
 		List<String> list = new ArrayList<String>();
@@ -119,5 +107,5 @@ public class SearchHistoryDao {
 		database.close();
 
 		return list;
-	}
+	}*/
 }

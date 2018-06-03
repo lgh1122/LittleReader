@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme"
         android:name=".MyApplication">
         <activity
-            android:name=".MainActivity"
+            android:name=".view.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
@@ -28,21 +28,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SearchActivity"
+            android:name=".view.SearchActivity"
             android:label=""
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".view.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.liuguanghui.littlereader.MainActivity" />
+                android:value="com.liuguanghui.littlereader.view.MainActivity" />
         </activity>
-        <activity android:name=".RefreshActivity" />
-        <activity android:name=".RefreshHeaderActivity" />
+        <activity android:name=".view.RefreshActivity" />
+        <activity android:name=".view.RefreshHeaderActivity" />
         <activity
-            android:name=".NovelDetailActivity"
+            android:name=".view.NovelDetailActivity"
             android:label="书籍详情" />
-        <activity android:name=".HelloCameraActivity" />
-        <activity android:name=".NovelReadActivity"
+        <activity android:name=".view.HelloCameraActivity" />
+        <activity android:name=".view.NovelReadActivity"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>

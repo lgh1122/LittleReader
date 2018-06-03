@@ -1,4 +1,4 @@
-package com.liuguanghui.littlereader;
+package com.liuguanghui.littlereader.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,12 +13,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.lcodecore.extextview.ExpandTextView;
-import com.liuguanghui.littlereader.dao.NovelInfoVODao;
-import com.liuguanghui.littlereader.pojo.NovelVO;
+import com.liuguanghui.littlereader.R;
+import com.liuguanghui.littlereader.db.entity.NovelBean;
+import com.liuguanghui.littlereader.db.helper.NovelHelper;
 import com.liuguanghui.littlereader.util.HttpClientUtil;
 import com.liuguanghui.littlereader.util.JsonResult;
 
@@ -38,36 +38,36 @@ public class NovelDetailActivity extends AppCompatActivity implements View.OnCli
     private ExpandTextView tv_book_desc;
     private Button bt_book_addStore;
 
-    private NovelVO novelVO;
-    private NovelInfoVODao dao ;
+    private NovelBean novelBean;
+    private NovelHelper novelHelper;
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             int what = msg.what;
             switch (what){
                 case 1:
-                    novelVO = (NovelVO) msg.obj;
-                    if(novelVO==null){
+                    novelBean = (NovelBean) msg.obj;
+                    if(novelBean ==null){
                         break;
                     }
                     pg_book_bar.setVisibility(View.GONE);
                     ll_book_view.setVisibility(View.VISIBLE);
-                    tv_book_author.setText(novelVO.getAuthor());
-                    tv_book_desc.setText(novelVO.getIntroduction());
-                    tv_book_type.setText(novelVO.getTname());
-                    tv_book_name.setText(novelVO.getTitle());
+                    tv_book_author.setText(novelBean.getAuthor());
+                    tv_book_desc.setText(novelBean.getIntroduction());
+                    tv_book_type.setText(novelBean.getTname());
+                    tv_book_name.setText(novelBean.getTitle());
                     break;
                 case 2:
-                    novelVO = (NovelVO) msg.obj;
-                    if(novelVO==null){
+                    novelBean = (NovelBean) msg.obj;
+                    if(novelBean ==null){
                         break;
                     }
                     pg_book_bar.setVisibility(View.GONE);
                     ll_book_view.setVisibility(View.VISIBLE);
-                    tv_book_author.setText(novelVO.getAuthor());
-                    tv_book_desc.setText(novelVO.getIntroduction());
-                    tv_book_type.setText(novelVO.getTname());
-                    tv_book_name.setText(novelVO.getTitle());
+                    tv_book_author.setText(novelBean.getAuthor());
+                    tv_book_desc.setText(novelBean.getIntroduction());
+                    tv_book_type.setText(novelBean.getTname());
+                    tv_book_name.setText(novelBean.getTitle());
                     bt_book_addStore.setText("移除书架");
                     break;
                 default:
@@ -91,7 +91,7 @@ public class NovelDetailActivity extends AppCompatActivity implements View.OnCli
         private TextView ;
         private TextView ;
         private ExpandTextView ;*/
-
+        novelHelper = NovelHelper.getsInstance();
         ll_book_view = findViewById(R.id.ll_book_view);
         pg_book_bar = findViewById(R.id.pg_book_bar);
         iv_book_image = findViewById(R.id.iv_book_image);
@@ -100,7 +100,7 @@ public class NovelDetailActivity extends AppCompatActivity implements View.OnCli
         tv_book_type = findViewById(R.id.tv_book_type);
         tv_book_desc = findViewById(R.id.tv_book_desc);
         bt_book_addStore = findViewById(R.id.bt_book_addStore);
-        dao = new NovelInfoVODao(NovelDetailActivity.this);
+
 
         // 得到intent 对象
         Intent intent = getIntent();
@@ -114,21 +114,22 @@ public class NovelDetailActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void run() {
                 try {
-                    NovelVO localNovelVO = dao.getNovelVO(Long.parseLong(netId),Long.parseLong(novelId));
+
+                    NovelBean localNovelBean =  novelHelper.findBookById(Long.parseLong(netId),Long.parseLong(novelId));
                     Message message = Message.obtain();
-                    if(localNovelVO!=null){
-                        if(localNovelVO.getIntroduction()!=null&&localNovelVO.getImgpath()!=null){
+                    if(localNovelBean !=null){
+                        if(localNovelBean.getIntroduction()!=null&& localNovelBean.getImgpath()!=null){
 
                         }else{
-                            NovelVO  vo =   NovelDetailActivity.this.requestNovelVo(netId,novelId);
-                            localNovelVO.setIntroduction(vo.getIntroduction());
-                            localNovelVO.setImgpath(vo.getImgpath());
-                            dao.update(localNovelVO);
+                            NovelBean vo =   NovelDetailActivity.this.requestNovelVo(netId,novelId);
+                            localNovelBean.setIntroduction(vo.getIntroduction());
+                            localNovelBean.setImgpath(vo.getImgpath());
+                            novelHelper.saveBook(localNovelBean);
                         }
                         message.what = 2;//标识
-                        message.obj = localNovelVO;
+                        message.obj = localNovelBean;
                     }else{
-                        NovelVO  vo =   NovelDetailActivity.this.requestNovelVo(netId,novelId);
+                        NovelBean vo =   NovelDetailActivity.this.requestNovelVo(netId,novelId);
                         message.what = 1;//标识
                         message.obj = vo;
                     }
@@ -156,11 +157,11 @@ public class NovelDetailActivity extends AppCompatActivity implements View.OnCli
      * @return
      * @throws Exception
      */
-    private   NovelVO requestNovelVo(String netId,String novelId) throws Exception {
+    private NovelBean requestNovelVo(String netId, String novelId) throws Exception {
         String result = null;
         Properties properties = new Properties();
         String path = "";
-        NovelVO novelVO = null;
+        NovelBean novelBean = null;
         try {
             properties.load(getAssets().open("my.properties"));
             path = properties.getProperty("novel_info_url");
@@ -170,12 +171,12 @@ public class NovelDetailActivity extends AppCompatActivity implements View.OnCli
 
         result = HttpClientUtil.httpPost(path+"/"+netId+"/"+novelId,null);
         if(result !=null && !"".equals(result)){
-            JsonResult jsonResult =   JsonResult.formatToPojo(result,NovelVO.class);
+            JsonResult jsonResult =   JsonResult.formatToPojo(result,NovelBean.class);
             if(jsonResult.getStatus() == 200){
-                novelVO = (NovelVO) jsonResult.getData();
+                novelBean = (NovelBean) jsonResult.getData();
             }
         }
-        return novelVO;
+        return novelBean;
     }
 
 
@@ -185,12 +186,12 @@ public class NovelDetailActivity extends AppCompatActivity implements View.OnCli
             case R.id.bt_book_addStore:
               String btName =   bt_book_addStore.getText().toString();
                 if("加入书架".equals(btName)){
-                    novelVO.setReadDate(SystemClock.currentThreadTimeMillis());
+                    novelBean.setReadDate(SystemClock.currentThreadTimeMillis());
                     bt_book_addStore.setText("移除书架");
-                    dao.add(novelVO);
+                    novelHelper.saveBook(novelBean);
                 }else{
                     bt_book_addStore.setText("加入书架");
-                    dao.deleteById(novelVO);
+                    novelHelper.removeBookInRx(novelBean).subscribe();
                 }
                 break;
             default:

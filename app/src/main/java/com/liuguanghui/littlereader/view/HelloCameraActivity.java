@@ -1,8 +1,4 @@
-package com.liuguanghui.littlereader;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+package com.liuguanghui.littlereader.view;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +14,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.liuguanghui.littlereader.R;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class HelloCameraActivity extends Activity
 {

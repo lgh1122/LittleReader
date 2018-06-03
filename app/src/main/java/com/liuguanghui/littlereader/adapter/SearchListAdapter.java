@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.liuguanghui.littlereader.R;
-import com.liuguanghui.littlereader.pojo.NovelVO;
+import com.liuguanghui.littlereader.db.entity.NovelBean;
 
 import java.util.List;
 
@@ -21,14 +21,14 @@ public class SearchListAdapter extends BaseAdapter {
     private Context context;
     //布局加载器
     private LayoutInflater mInflater;
-    private List<NovelVO> novelInfos;
+    private List<NovelBean> novelInfos;
 
     //动态改变appInfos
-    public void setAppInfos(List<NovelVO> novelInfos) {
+    public void setAppInfos(List<NovelBean> novelInfos) {
         this.novelInfos = novelInfos;
     }
 
-    public SearchListAdapter(Context context, List<NovelVO> appInfos) {
+    public SearchListAdapter(Context context, List<NovelBean> appInfos) {
         this.context = context;
         this.novelInfos = appInfos;
         mInflater = LayoutInflater.from(context);
@@ -68,12 +68,12 @@ public class SearchListAdapter extends BaseAdapter {
         TextView authorTV = (TextView) convertView.findViewById(R.id.search_novel_author);
 
         //获取position位置上的AppInfo对象
-        NovelVO novelVO = novelInfos.get(position);
+        NovelBean novelBean = novelInfos.get(position);
 
         imageView.setImageResource(R.mipmap.commonnovelimg);
-        nameTV.setText(novelVO.getTitle());
-        typeTV.setText(novelVO.getTname());
-        authorTV.setText(novelVO.getAuthor()+"著");
+        nameTV.setText(novelBean.getTitle());
+        typeTV.setText(novelBean.getTname());
+        authorTV.setText(novelBean.getAuthor()+"著");
         return convertView;
     }
 }

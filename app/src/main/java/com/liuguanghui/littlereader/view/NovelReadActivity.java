@@ -1,4 +1,4 @@
-package com.liuguanghui.littlereader;
+package com.liuguanghui.littlereader.view;
 
 import android.content.res.AssetManager;
 import android.os.Build;
@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.liuguanghui.littlereader.R;
 import com.liuguanghui.littlereader.page.PageView;
 import com.liuguanghui.littlereader.util.ReadSettingManager;
 import com.liuguanghui.littlereader.util.ScreenUtils;
@@ -236,16 +237,16 @@ public class NovelReadActivity extends AppCompatActivity {
                /* textView.setText(text.subSequence(0, COUNT));
                 textView = (TextView) view2.findViewById(R.id.textview);*/
                 if (textLenght > (COUNT << 1)) {
-                    mPvReadPage.setText(text.subSequence(COUNT, COUNT * 2));
+                   // mPvReadPage.setText(text.subSequence(COUNT, COUNT * 2));
                     currentShowEndIndex = COUNT;
                     currentBottomEndIndex = COUNT << 1;
                 } else {
-                    mPvReadPage.setText(text.subSequence(COUNT, textLenght));
+                   // mPvReadPage.setText(text.subSequence(COUNT, textLenght));
                     currentShowEndIndex = textLenght;
                     currentBottomEndIndex = textLenght;
                 }
             } else {
-                mPvReadPage.setText(text.subSequence(0, textLenght));
+              //  mPvReadPage.setText(text.subSequence(0, textLenght));
                 currentShowEndIndex = textLenght;
                 currentBottomEndIndex = textLenght;
             }

@@ -1,4 +1,4 @@
-package com.liuguanghui.littlereader;
+package com.liuguanghui.littlereader.view;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -21,11 +21,12 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.liuguanghui.littlereader.R;
 import com.liuguanghui.littlereader.adapter.SearchListAdapter;
-import com.liuguanghui.littlereader.dao.NovelInfoVODao;
-import com.liuguanghui.littlereader.dao.SearchHistoryDao;
-import com.liuguanghui.littlereader.pojo.NovelVO;
-import com.liuguanghui.littlereader.util.CommonUtil;
+import com.liuguanghui.littlereader.db.entity.NovelBean;
+import com.liuguanghui.littlereader.db.entity.NovelSearchHistory;
+import com.liuguanghui.littlereader.db.helper.NovelHelper;
+import com.liuguanghui.littlereader.db.helper.NovelSearchHistoryHelper;
 import com.liuguanghui.littlereader.util.HttpClientUtil;
 import com.liuguanghui.littlereader.util.JsonResult;
 import com.liuguanghui.littlereader.util.SearchResult;
@@ -38,6 +39,7 @@ import com.zhy.view.flowlayout.TagFlowLayout;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,10 +52,12 @@ public class SearchActivity  extends Activity {
     private ListView search_list_view;
     private ListView search_history_view;
     private TextView search_removehistory;
-    private List<NovelVO> data ;
+    private List<NovelBean> data ;
     private SearchListAdapter adapter;
-    private NovelInfoVODao dao ;
-    private SearchHistoryDao historyDao ;
+    /*private NovelInfoVODao dao ;
+    private SearchHistoryDao historyDao ;*/
+    private NovelHelper novelHelper;
+    private NovelSearchHistoryHelper novelSearchHistoryHelper;
     private LinearLayout ll_search_loading;
     private LinearLayout ll_search_load_recommend;
     private EditText search_text;
@@ -71,9 +75,10 @@ public class SearchActivity  extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-
-        dao = new NovelInfoVODao(SearchActivity.this);
-        historyDao = new SearchHistoryDao(SearchActivity.this);
+        novelHelper = NovelHelper.getsInstance();
+       // dao = new NovelInfoVODao(SearchActivity.this);
+        novelSearchHistoryHelper = NovelSearchHistoryHelper.getsInstance();
+       // historyDao = new SearchHistoryDao(SearchActivity.this);
         //创建分线程请求服务器动态加载数据并显示
         search_list_view= findViewById(R.id.search_list_view);
         search_history_view= findViewById(R.id.search_history_view);
@@ -122,12 +127,15 @@ public class SearchActivity  extends Activity {
                     //1. 主线程, 显示提示视图
                     ll_search_load_recommend.setVisibility(View.GONE);
                     ll_search_loading.setVisibility(View.VISIBLE);
-                    String oldHisttory = historyDao.getHistory(text);
-                    if(oldHisttory!=null){
-                        historyDao.update(text);
+                    NovelSearchHistory novelSearchHistory = novelSearchHistoryHelper.findBookHistoryByKeyword(text);
+                    if(novelSearchHistory!=null){
+                        novelSearchHistory.setId(new Date().getTime());
                     }else{
-                        historyDao.add(text);
+                        novelSearchHistory = new NovelSearchHistory();
+                        novelSearchHistory.setId(new Date().getTime());
+                        novelSearchHistory.setKeyword(text);
                     }
+                    novelSearchHistoryHelper.saveBook(novelSearchHistory);
                     isHasMore = true;
                     page= 1;
                     data = new ArrayList<>();
@@ -181,7 +189,7 @@ public class SearchActivity  extends Activity {
         search_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                NovelVO info = data.get(position);
+                NovelBean info = data.get(position);
                 Intent intent = new Intent(SearchActivity.this,NovelDetailActivity.class);
                 intent.putExtra("netId" ,info.getNetid()+"");
                 intent.putExtra("novelId" ,info.getId()+"");
@@ -192,9 +200,9 @@ public class SearchActivity  extends Activity {
         search_list_view.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                final NovelVO info = data.get(position);
+                final NovelBean info = data.get(position);
 
-              NovelVO sqlNovel =   dao.getNovelVO(info.getNetid(),info.getId());
+              NovelBean sqlNovel =   novelHelper.findBookById(info.getId(),info.getNetid());
                 final String[] items = {sqlNovel!=null ?"移除书架":"加入书架", "书籍详情"};
                 new AlertDialog.Builder(SearchActivity.this)
                         .setTitle(info.getTitle())
@@ -206,9 +214,9 @@ public class SearchActivity  extends Activity {
                                         Toast.makeText(SearchActivity.this,items[which],Toast.LENGTH_SHORT).show();
                                         if("加入书架".equals(items[which])){
                                             info.setReadDate(SystemClock.currentThreadTimeMillis());
-                                            dao.add(info);
+                                            novelHelper.saveBook(info);
                                         }else{
-                                            dao.deleteById(info);
+                                            novelHelper.removeBookInRx(info);
                                         }
                                         break;
                                     case 1:
@@ -229,12 +237,12 @@ public class SearchActivity  extends Activity {
 
         // 搜索历史列表
         //准备集合数据
-        List<String> historyList = historyDao.getAll();
+        List<NovelSearchHistory> historyList = novelSearchHistoryHelper.findLimitBookHistorys();
         List<Map<String, Object>> historyData = new ArrayList<Map<String,Object>>();
         Map<String, Object> map  = null;
-         for (String str : historyList){
+         for (NovelSearchHistory novelSearchHistory : historyList){
              map = new HashMap<String, Object>();
-             map.put("keyword", str);
+             map.put("keyword", novelSearchHistory.getKeyword());
              map.put("image", R.mipmap.search_history_mark_light);
              historyData.add(map);
          }
@@ -260,7 +268,7 @@ public class SearchActivity  extends Activity {
         search_removehistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                historyDao.deleteAll();
+                novelSearchHistoryHelper.removeAllHistory();
                 historyData.clear();
                 simpleAdapter.notifyDataSetChanged();
             }
@@ -344,9 +352,9 @@ public class SearchActivity  extends Activity {
                     ObjectMapper mapper = new ObjectMapper( );
 
                     String jsonStr = mapper.writeValueAsString(result.getItemList());
-		            List<NovelVO> novelChild = mapper.reader().withType(new TypeReference<List<NovelVO>>() {})
+		            List<NovelBean> novelChild = mapper.reader().withType(new TypeReference<List<NovelBean>>() {})
 		            .readValue(jsonStr);
-                    //List novelChild = JsonResult.formatToChildList(result.getItemList(),NovelVO.class);
+                    //List novelChild = JsonResult.formatToChildList(result.getItemList(),NovelBean.class);
                     data.addAll(novelChild);
                     Log.e("DEBUG","查询的是第"+page+"页");
                     //Log.e("DEBUG",result.getItemList().toString());
@@ -372,8 +380,8 @@ public class SearchActivity  extends Activity {
                     });
 
                     Gson gson = builder.create();
-                    List<NovelVO> list =gson.fromJson(jsonArray.toString(), new TypeToken< List<NovelVO> >(){}.getType());
-                    //data = new Gson().fromJson(jsonArray.toString(), new TypeToken<List<NovelVO>>(){}.getType());
+                    List<NovelBean> list =gson.fromJson(jsonArray.toString(), new TypeToken< List<NovelBean> >(){}.getType());
+                    //data = new Gson().fromJson(jsonArray.toString(), new TypeToken<List<NovelBean>>(){}.getType());
                     }
                     */
 
