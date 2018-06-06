@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private List<NovelBean> novelInfos;
     private NovelListAdapter adapter;
     //private NovelInfoVODao dao ;
+    //测试
     private NovelHelper novelHelper;
     private TextView content_text_view;
 
