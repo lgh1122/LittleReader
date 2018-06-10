@@ -9,13 +9,13 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name=".MyApplication">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".view.MainActivity"
             android:label="@string/app_name"
@@ -42,9 +42,13 @@
             android:name=".view.NovelDetailActivity"
             android:label="书籍详情" />
         <activity android:name=".view.HelloCameraActivity" />
-        <activity android:name=".view.NovelReadActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+        <activity
+            android:name=".view.NovelReadActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".view.NovelSettingsActivity"
+            android:theme="@style/SettingAppTheme"
+            android:label="@string/title_activity_novel_settings"></activity>
     </application>
 
 </manifest>

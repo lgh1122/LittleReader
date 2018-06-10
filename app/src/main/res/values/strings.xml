@@ -2,4 +2,32 @@
     <string name="app_name">小书屋</string>
     <string name="action_settings">Settings</string>
     <string name="search_url">http://139.199.36.170:8080/novel.rest/novel/list</string>
+    <string name="title_activity_novel_settings">设置</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+
+    <string name="pref_title_autofocus">自动对焦</string>
+    <string name="pref_description_autofocus">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_quality_to_messages">图片质量</string>
+    <string name="quality_list">quality_list</string>
+    <string-array name="pref_quality_list_titles">
+        <item>高</item>
+        <item>中</item>
+        <item>低</item>
+    </string-array>
+    <string-array name="pref_quality_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+
 </resources>
