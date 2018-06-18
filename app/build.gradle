@@ -17,24 +17,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     greendao {
         schemaVersion 1
         daoPackage 'com.liuguanghui.littlereader.db.gen'
         targetGenDir 'src/main/java'
     }
-
     sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/2'] } }
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
     }
-
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
     }
-
-
+    buildToolsVersion '26.0.2'
 }
 repositories {
     maven {
@@ -62,17 +58,15 @@ dependencies {
      * extextview textview折叠
      * extextview           : "1.0.2"
      */
-    implementation "com.lcodecorex:extextview:1.0.2"
+    implementation 'com.lcodecorex:extextview:1.0.2'
     implementation files('libs/jackson-core-2.4.2.jar')
     implementation files('libs/jackson-databind-2.4.2.jar')
     implementation files('libs/gson-2.1.jar')
     implementation files('libs/jackson-annotations-2.4.0.jar')
     //greendao依赖
     implementation 'org.greenrobot:greendao:3.2.0'
-
-    compile "io.reactivex.rxjava2:rxjava:2.0.1"
+    compile 'io.reactivex.rxjava2:rxjava:2.0.1'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
-
 }
 configurations.all {
     resolutionStrategy.force 'com.android.support:support-annotations:27.1.1'
