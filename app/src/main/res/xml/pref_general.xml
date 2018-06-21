@@ -1,5 +1,5 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <PreferenceCategory android:title="相机设置">
     <SwitchPreference
         android:defaultValue="true"
         android:key="autofocus_switch"
@@ -25,9 +25,26 @@
         android:defaultValue="1"
         android:entries="@array/pref_quality_list_titles"
         android:entryValues="@array/pref_quality_list_values"
-        android:key="@string/quality_list"
+        android:key="quality_list"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/pref_quality_to_messages" />
+</PreferenceCategory>
+    <PreferenceCategory android:title="帮助中心">
+        <Preference android:title="使用帮助"
+            android:key="usedHelp">
+        </Preference>
+
+        <Preference android:title="后台下载更新"
+            android:key="cameraUpdate">
+        </Preference>
+        <Preference android:title="强制更新"
+            android:key="cameraForceUpdate">
+        </Preference>
+
+        <Preference android:title="测试contentprovide"
+            android:key="testcontentprovide">
+        </Preference>
+    </PreferenceCategory>
 
 </PreferenceScreen>

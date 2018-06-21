@@ -17,7 +17,6 @@
     <string name="pref_default_display_name">John Smith</string>
 
     <string name="pref_quality_to_messages">图片质量</string>
-    <string name="quality_list">quality_list</string>
     <string-array name="pref_quality_list_titles">
         <item>高</item>
         <item>中</item>
