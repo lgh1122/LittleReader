@@ -2,16 +2,12 @@ package com.liuguanghui.littlereader.view;
 
 import android.Manifest;
 import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -25,16 +21,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.liuguanghui.littlereader.R;
-import com.qiangxi.checkupdatelibrary.Q;
-import com.qiangxi.checkupdatelibrary.bean.CheckUpdateInfo;
-import com.qiangxi.checkupdatelibrary.callback.CheckUpdateCallback;
-import com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog;
-import com.qiangxi.checkupdatelibrary.dialog.UpdateDialog;
-
-import static com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog.FORCE_UPDATE_DIALOG_PERMISSION_REQUEST_CODE;
-import static com.qiangxi.checkupdatelibrary.dialog.UpdateDialog.UPDATE_DIALOG_PERMISSION_REQUEST_CODE;
+import com.liuguanghui.littlereader.util.UpdateVersionUtil;
 
 public class NovelSettingsActivity extends PreferenceActivity   {
 
@@ -43,6 +31,8 @@ public class NovelSettingsActivity extends PreferenceActivity   {
     private  Preference updatePreference;
     private  Preference usedHelpPre;
     private AppCompatDelegate mDelegate;
+
+    private  UpdateVersionUtil updateVersionUtil ;
     private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
@@ -116,7 +106,8 @@ public class NovelSettingsActivity extends PreferenceActivity   {
                 int permissionStatus = ContextCompat.checkSelfPermission(NovelSettingsActivity.this, "android.permission-group.STORAGE");
 
                 Toast.makeText(NovelSettingsActivity.this,permissionStatus+"",Toast.LENGTH_SHORT).show();
-                initData();
+                updateVersionUtil = new UpdateVersionUtil(NovelSettingsActivity.this,"http://10.3.29.67:9085/version/find");
+                updateVersionUtil.initData();
                 return false;
             }
         });
@@ -133,182 +124,78 @@ public class NovelSettingsActivity extends PreferenceActivity   {
     }
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
     public void getMsgs(){
-        Uri uri = Uri.parse("content://sms/");
-
-
-
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            int hasWriteContactsPermission =  checkSelfPermission(Manifest.permission.READ_CONTACTS);
+            int permissionStatus = ContextCompat.checkSelfPermission(NovelSettingsActivity.this, Manifest.permission.READ_SMS);
+            Toast.makeText(NovelSettingsActivity.this,permissionStatus+"",Toast.LENGTH_SHORT).show();
 
-            Toast.makeText(this,"检查权限"+hasWriteContactsPermission,Toast.LENGTH_SHORT).show();
+            if(permissionStatus == PackageManager.PERMISSION_GRANTED){
+                printSms();
+            } else{
+                requestPermissions(new String[]{Manifest.permission.READ_SMS},REQUEST_CODE_ASK_PERMISSIONS);
+            }
+        }else{
+            printSms();
+        }
 
-
-            if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED){
-                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},REQUEST_CODE_ASK_PERMISSIONS);
-                System.out.println("没有权限" );
-                Log.i("TESTLITT","地址:" + "没有权限");
-                return;
-            }else{
-                ContentResolver resolver = getContentResolver();
-                //获取的是哪些列的信息
-                Cursor cursor = resolver.query(uri, new String[]{"address","date","type","body"}, null, null, null);
-                while(cursor.moveToNext())
-                {
-                    String address = cursor.getString(0);
-                    String date = cursor.getString(1);
-                    String type = cursor.getString(2);
-                    String body = cursor.getString(3);
-                    Log.i("TESTLITT","地址:" + address);
-                    Log.i("TESTLITT","内容:" + body);
+    }
+    private  void printSms(){
+        ContentResolver resolver = getContentResolver();
+        //获取的是哪些列的信息
+        Uri uri = Uri.parse("content://sms/");
+        Cursor cursor = resolver.query(uri, new String[]{"address","date","type","body"}, null, null, null);
+        while(cursor.moveToNext())
+        {
+            String address = cursor.getString(0);
+            String date = cursor.getString(1);
+            String type = cursor.getString(2);
+            String body = cursor.getString(3);
+            Log.i("TESTLITT","地址:" + address);
+            Log.i("TESTLITT","内容:" + body);
                    /* System.out.println("地址:" + address);
                     System.out.println("时间:" + date);
                     System.out.println("类型:" + type);
                     System.out.println("内容:" + body);
                     System.out.println("======================");*/
-                }
-                cursor.close();
-            }
-
-            System.out.println("测试完" );
         }
-
-
-
+        cursor.close();
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         //如果用户同意所请求的权限
         if(REQUEST_CODE_ASK_PERMISSIONS == requestCode){
-            Toast.makeText(this, "用户同意了获取短信权限", Toast.LENGTH_SHORT).show();
+            int permissionStatus = ContextCompat.checkSelfPermission(NovelSettingsActivity.this, Manifest.permission.READ_SMS);
+            if(permissionStatus == PackageManager.PERMISSION_GRANTED){
+                printSms();
+            }else{
+                Toast.makeText(NovelSettingsActivity.this,"用户拒绝了短信访问权限",Toast.LENGTH_SHORT).show();
+            }
         }else{
             if (permissions[0].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //UPDATE_DIALOG_PERMISSION_REQUEST_CODE和FORCE_UPDATE_DIALOG_PERMISSION_REQUEST_CODE这两个常量是library中定义好的
-                //所以在进行判断时,必须要结合这两个常量进行判断.
-                //非强制更新对话框
-                if (requestCode == UPDATE_DIALOG_PERMISSION_REQUEST_CODE) {
-                    //进行下载操作
-                    mUpdateDialog.download();
-                }
-                //强制更新对话框
-                else if (requestCode == FORCE_UPDATE_DIALOG_PERMISSION_REQUEST_CODE) {
-                    //进行下载操作
-                    mForceUpdateDialog.download();
-                }
-            } else {
-                //用户不同意,提示用户,如下载失败,因为您拒绝了相关权限
-                Toast.makeText(this, "请开启读写sd卡权限,不然无法正常工作", Toast.LENGTH_SHORT).show();
-//            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//                Log.e("tag", "false.请开启读写sd卡权限,不然无法正常工作");
-//            } else {
-//                Log.e("tag", "true.请开启读写sd卡权限,不然无法正常工作");
-//            }
-
-            }
-        }
-
-    }
-
-    private CheckUpdateInfo mCheckUpdateInfo;
-    /**
-     * 强制更新
-     */
-    private   ForceUpdateDialog mForceUpdateDialog = null;
-    /**
-     * 非强制更新
-     */
-    private  UpdateDialog mUpdateDialog = null;
-    private void initData() {
-        //被注释的代码用来进行检查更新,这里为了方便,模拟一些假数据
-        Q.checkUpdate("post", getVersionCode(), "http://10.3.29.67:9085/version/find",null, new CheckUpdateCallback() {
-            @Override
-            public void onCheckUpdateSuccess(String result, boolean hasUpdate) {
-                //result:服务端返回的json
-                mCheckUpdateInfo = new Gson().fromJson(result, CheckUpdateInfo.class);
-
-                //有更新,显示dialog等
-                if (hasUpdate) {
-                    //强制更新,这里用0表示强制更新,实际情况中可与服务端商定什么数字代表强制更新即可
-                    if (mCheckUpdateInfo.getIsForceUpdate() == 0) {
-                        //show ForceUpdateDialog
-                        forceUpdateDialogClick( );
-                    }
-                    //非强制更新
-                    else {
-                        //show UpdateDialog
-                        UpdateDialogClick();
-                    }
+                if( grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(this, "许可权限，开始下载", Toast.LENGTH_SHORT).show();
+                    updateVersionUtil.permissionsResultDown();
                 } else {
-                    //无更新,提示已是最新版等
-                    Toast.makeText(NovelSettingsActivity.this, "已是最新版本", Toast.LENGTH_SHORT).show();
-
+                    //用户不同意,提示用户,如下载失败,因为您拒绝了相关权限
+                    Toast.makeText(this, "请开启读写sd卡权限,不然无法保存更新文件", Toast.LENGTH_SHORT).show();
                 }
+
             }
-
-            @Override
-            public void onCheckUpdateFailure(String failureMessage, int errorCode) {
-                Toast.makeText(NovelSettingsActivity.this, "无法连接服务端获取更新", Toast.LENGTH_SHORT).show();
-                //failureMessage:一般为try{}catch(){}捕获的异常信息
-                //errorCode:暂时没什么用
-            }
-        });
-
-    }
-
-
-    public void forceUpdateDialogClick( ) {
-
-        if (mCheckUpdateInfo.getIsForceUpdate() == 0) {
-            mForceUpdateDialog = new ForceUpdateDialog(NovelSettingsActivity.this);
-            mForceUpdateDialog.setAppSize(mCheckUpdateInfo.getNewAppSize())
-                    .setDownloadUrl(mCheckUpdateInfo.getNewAppUrl())
-                    .setTitle(mCheckUpdateInfo.getAppName() + "有更新啦")
-                    .setReleaseTime(mCheckUpdateInfo.getNewAppReleaseTime())
-                    .setVersionName(mCheckUpdateInfo.getNewAppVersionName())
-                    .setUpdateDesc(mCheckUpdateInfo.getNewAppUpdateDesc())
-                    .setFileName("都邦水印相机.apk")
-                    .setFilePath(Environment.getExternalStorageDirectory().getPath() + "/checkupdatelib").show();
         }
+
     }
 
 
 
-    public void UpdateDialogClick( ) {
 
-        if (mCheckUpdateInfo.getIsForceUpdate() == 1) {
-            mUpdateDialog = new UpdateDialog(NovelSettingsActivity.this);
-            mUpdateDialog.setAppSize(mCheckUpdateInfo.getNewAppSize())
-                    .setDownloadUrl(mCheckUpdateInfo.getNewAppUrl())
-                    .setTitle(mCheckUpdateInfo.getAppName() + "有更新啦")
-                    .setReleaseTime(mCheckUpdateInfo.getNewAppReleaseTime())
-                    .setVersionName(mCheckUpdateInfo.getNewAppVersionName())
-                    .setUpdateDesc(mCheckUpdateInfo.getNewAppUpdateDesc())
-                    .setFileName("都邦水印相机.apk")
-                    .setFilePath(Environment.getExternalStorageDirectory().getPath() + "/checkupdatelib")
-                    //该方法需设为true,才会在通知栏显示下载进度,默认为false,即不显示
-                    //该方法只会控制下载进度的展示,当下载完成或下载失败时展示的通知不受该方法影响
-                    //即不管该方法是置为false还是true,当下载完成或下载失败时都会在通知栏展示一个通知
-                    .setShowProgress(true)
-                    .setIconResId(R.mipmap.ic_launcher)
-                    .setAppName(mCheckUpdateInfo.getAppName()).show();
-        }
-    }
-    /**
-     * 获取当前应用版本号
-     */
-    private int getVersionCode() {
-        try {
-            PackageManager packageManager = getPackageManager();
-            PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-            return -1;
-        }
-    }
+
+
+
+
 
 
     private void setupActionBar() {
