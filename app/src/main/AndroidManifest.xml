@@ -58,7 +58,9 @@
             android:theme="@style/SettingAppTheme"
             android:label="@string/title_activity_novel_settings"></activity>
 
+<!--
         <service android:name="com.qiangxi.checkupdatelibrary.service.DownloadService"/>
+-->
 
     </application>
 

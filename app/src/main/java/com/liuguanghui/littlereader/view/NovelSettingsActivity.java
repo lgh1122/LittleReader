@@ -23,11 +23,11 @@ import android.widget.Toast;
 
 import com.liuguanghui.littlereader.R;
 import com.liuguanghui.littlereader.util.UpdateVersionUtil;
+import com.liuguanghui.littlereader.util.VersionCheckUtil;
 
 public class NovelSettingsActivity extends PreferenceActivity   {
 
 
-    private  Preference testcontentprovide;
     private  Preference updatePreference;
     private  Preference usedHelpPre;
     private AppCompatDelegate mDelegate;
@@ -84,8 +84,7 @@ public class NovelSettingsActivity extends PreferenceActivity   {
         bindPreferenceSummaryToValue(findPreference("example_text"));
         bindPreferenceSummaryToValue(findPreference("quality_list"));
 
-        testcontentprovide = findPreference("testcontentprovide");
-        updatePreference = findPreference("cameraUpdate");
+         updatePreference = findPreference("cameraUpdate");
         usedHelpPre = findPreference("usedHelp");
         initClick();
     }
@@ -93,21 +92,17 @@ public class NovelSettingsActivity extends PreferenceActivity   {
     private void initClick() {
 
 
-        testcontentprovide.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                getMsgs();
-                return false;
-            }
-        });
+
         updatePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 int permissionStatus = ContextCompat.checkSelfPermission(NovelSettingsActivity.this, "android.permission-group.STORAGE");
 
                 Toast.makeText(NovelSettingsActivity.this,permissionStatus+"",Toast.LENGTH_SHORT).show();
-                updateVersionUtil = new UpdateVersionUtil(NovelSettingsActivity.this,"http://10.3.29.67:9085/version/find");
-                updateVersionUtil.initData();
+                /*updateVersionUtil = new UpdateVersionUtil(NovelSettingsActivity.this,"http://10.3.29.67:9085/version/find");
+                updateVersionUtil.initData();*/
+                VersionCheckUtil versionCheckUtil = new VersionCheckUtil(NovelSettingsActivity.this);
+                versionCheckUtil.sendRequest();
                 return false;
             }
         });
@@ -122,78 +117,6 @@ public class NovelSettingsActivity extends PreferenceActivity   {
         });
 
     }
-    final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
-    public void getMsgs(){
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            int permissionStatus = ContextCompat.checkSelfPermission(NovelSettingsActivity.this, Manifest.permission.READ_SMS);
-            Toast.makeText(NovelSettingsActivity.this,permissionStatus+"",Toast.LENGTH_SHORT).show();
-
-            if(permissionStatus == PackageManager.PERMISSION_GRANTED){
-                printSms();
-            } else{
-                requestPermissions(new String[]{Manifest.permission.READ_SMS},REQUEST_CODE_ASK_PERMISSIONS);
-            }
-        }else{
-            printSms();
-        }
-
-    }
-    private  void printSms(){
-        ContentResolver resolver = getContentResolver();
-        //获取的是哪些列的信息
-        Uri uri = Uri.parse("content://sms/");
-        Cursor cursor = resolver.query(uri, new String[]{"address","date","type","body"}, null, null, null);
-        while(cursor.moveToNext())
-        {
-            String address = cursor.getString(0);
-            String date = cursor.getString(1);
-            String type = cursor.getString(2);
-            String body = cursor.getString(3);
-            Log.i("TESTLITT","地址:" + address);
-            Log.i("TESTLITT","内容:" + body);
-                   /* System.out.println("地址:" + address);
-                    System.out.println("时间:" + date);
-                    System.out.println("类型:" + type);
-                    System.out.println("内容:" + body);
-                    System.out.println("======================");*/
-        }
-        cursor.close();
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        //如果用户同意所请求的权限
-        if(REQUEST_CODE_ASK_PERMISSIONS == requestCode){
-            int permissionStatus = ContextCompat.checkSelfPermission(NovelSettingsActivity.this, Manifest.permission.READ_SMS);
-            if(permissionStatus == PackageManager.PERMISSION_GRANTED){
-                printSms();
-            }else{
-                Toast.makeText(NovelSettingsActivity.this,"用户拒绝了短信访问权限",Toast.LENGTH_SHORT).show();
-            }
-        }else{
-            if (permissions[0].equals(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if( grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                    Toast.makeText(this, "许可权限，开始下载", Toast.LENGTH_SHORT).show();
-                    updateVersionUtil.permissionsResultDown();
-                } else {
-                    //用户不同意,提示用户,如下载失败,因为您拒绝了相关权限
-                    Toast.makeText(this, "请开启读写sd卡权限,不然无法保存更新文件", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        }
-
-    }
-
-
-
-
-
-
 
 
 

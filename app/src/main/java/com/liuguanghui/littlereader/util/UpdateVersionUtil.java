@@ -1,20 +1,5 @@
 package com.liuguanghui.littlereader.util;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Environment;
-import android.util.Log;
-import android.widget.Toast;
-
-import com.google.gson.Gson;
-import com.liuguanghui.littlereader.R;
-import com.liuguanghui.littlereader.view.NovelSettingsActivity;
-import com.qiangxi.checkupdatelibrary.Q;
-import com.qiangxi.checkupdatelibrary.bean.CheckUpdateInfo;
-import com.qiangxi.checkupdatelibrary.callback.CheckUpdateCallback;
-import com.qiangxi.checkupdatelibrary.dialog.ForceUpdateDialog;
-import com.qiangxi.checkupdatelibrary.dialog.UpdateDialog;
 
 /**
  * Created by liuguanghui on 2018/6/26.
@@ -22,20 +7,20 @@ import com.qiangxi.checkupdatelibrary.dialog.UpdateDialog;
 
 public class UpdateVersionUtil {
 
-
+/*
     private Context context;
     private CheckUpdateInfo mCheckUpdateInfo;
 
     private String checkVersionUrl;
 
 
-    /**
+    *//**
      * 强制更新
-     */
+     *//*
     private ForceUpdateDialog mForceUpdateDialog = null;
-    /**
+    *//**
      * 非强制更新
-     */
+     *//*
     private UpdateDialog mUpdateDialog = null;
 
     public UpdateVersionUtil(Context context ,String checkVersionUrl ){
@@ -81,9 +66,9 @@ public class UpdateVersionUtil {
 
     }
 
-    /**
+    *//**
      * 获取当前应用版本号
-     */
+     *//*
     private int getVersionCode() {
         try {
             PackageManager packageManager = context.getPackageManager();
@@ -141,5 +126,5 @@ public class UpdateVersionUtil {
             //进行强制下载操作
             mForceUpdateDialog.download();
         }
-    }
+    }*/
 }

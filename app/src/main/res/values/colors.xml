@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-     <color name="colorPrimary">#B93221</color>
+
+    <color name="checkupdatelibrary_no_update_button">#EBEBEB</color>
+    <color name="checkupdatelibrary_normal_text_color">#666666</color>
+    <color name="checkupdatelibrary_update_button">#64B5F6</color>
+    <color name="colorPrimary">#B93221</color>
     <color name="colorPrimaryOld">#3F51B5</color>
 
     <color name="colorPrimaryDark">#6A2518</color>

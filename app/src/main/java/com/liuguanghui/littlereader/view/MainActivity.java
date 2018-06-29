@@ -25,6 +25,7 @@ import com.liuguanghui.littlereader.db.entity.NovelBean;
 import com.liuguanghui.littlereader.db.helper.NovelHelper;
 import com.liuguanghui.littlereader.util.CommonUtil;
 import com.liuguanghui.littlereader.util.ImageLoader;
+import com.liuguanghui.littlereader.util.VersionCheckUtil;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -78,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        VersionCheckUtil versionCheckUtil = new VersionCheckUtil(MainActivity.this);
+        versionCheckUtil.sendRequest();
 
         content_text_view = findViewById(R.id.content_text_view);
         RefreshLayout content_refreshLayout = (RefreshLayout)findViewById(R.id.content_refreshLayout);
