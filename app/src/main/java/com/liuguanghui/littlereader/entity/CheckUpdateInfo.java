@@ -12,7 +12,7 @@ public class CheckUpdateInfo {
     private String newAppReleaseTime;
     private String newAppUrl;
     private int isForceUpdate;
-    private int isUsePreDialog;
+    private Integer isUseNewPage;
 
     public CheckUpdateInfo() {
     }
@@ -28,12 +28,13 @@ public class CheckUpdateInfo {
         this.isForceUpdate = isForceUpdate;
     }
 
-    public int getIsUsePreDialog() {
-        return isUsePreDialog;
+
+    public Integer getIsUseNewPage() {
+        return isUseNewPage;
     }
 
-    public void setIsUsePreDialog(int isUsePreDialog) {
-        this.isUsePreDialog = isUsePreDialog;
+    public void setIsUseNewPage(Integer isUseNewPage) {
+        this.isUseNewPage = isUseNewPage;
     }
 
     public String getAppName() {

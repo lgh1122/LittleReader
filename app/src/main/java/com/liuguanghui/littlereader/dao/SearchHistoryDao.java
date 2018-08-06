@@ -3,6 +3,7 @@ package com.liuguanghui.littlereader.dao;
 /**
  * 操作tbNovelSearchHistory表的DAO类
  */
+@Deprecated
 public class SearchHistoryDao {
 
 	/*private DBNovelVOHelper dbHelper;

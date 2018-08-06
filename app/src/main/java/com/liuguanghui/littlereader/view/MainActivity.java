@@ -254,11 +254,11 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(this,SearchActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.action_add:
+           /* case R.id.action_add:
 
                 Intent intentAdd = new Intent(this,RefreshHeaderActivity.class);
                 startActivity(intentAdd);
-                break;
+                break;*/
             case R.id.action_settings:
                 Intent intentDetaile = new Intent(this,NovelSettingsActivity.class);
                 startActivity(intentDetaile);

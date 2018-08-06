@@ -4,6 +4,7 @@ package com.liuguanghui.littlereader.dao;
  * 操作black_number表的DAO类
  *
  */
+@Deprecated
 public class NovelInfoVODao {
 
 	/*private DBNovelVOHelper dbHelper;

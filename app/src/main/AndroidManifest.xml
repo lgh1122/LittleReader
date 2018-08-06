@@ -44,12 +44,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.liuguanghui.littlereader.view.MainActivity" />
         </activity>
-        <activity android:name=".view.RefreshActivity" />
-        <activity android:name=".view.RefreshHeaderActivity" />
         <activity
             android:name=".view.NovelDetailActivity"
             android:label="书籍详情" />
-        <activity android:name=".view.HelloCameraActivity" />
         <activity
             android:name=".view.NovelReadActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>

@@ -51,7 +51,7 @@ public class VersionCheckUtil {
                         int localVersionCode = getVersionCode();
                         if(mCheckUpdateInfo.getNewAppVersionCode()>localVersionCode){
                             UIData uiData = UIData.create();
-                            if(mCheckUpdateInfo.getIsUsePreDialog() == 0 ){
+                            if(mCheckUpdateInfo.getIsUseNewPage() == 0 ){
                                 //使用默认界面
 
                                 uiData.setTitle(mCheckUpdateInfo.getAppName()+"  更新");
@@ -78,13 +78,13 @@ public class VersionCheckUtil {
                                     @Override
                                     public Dialog getCustomVersionDialog(Context context, UIData versionBundle) {
                                         View view = View.inflate(context, R.layout.checkupdatelibrary_update_dialog_layout, null);
-                                          TextView updateTitle = (TextView) view.findViewById(R.id.updateTitle);
-                                          TextView updateTime = (TextView) view.findViewById(R.id.updateTime);
-                                          TextView updateVersion = (TextView) view.findViewById(R.id.updateVersion);
-                                          TextView updateSize = (TextView) view.findViewById(R.id.updateSize);
-                                          TextView updateDesc = (TextView) view.findViewById(R.id.updateDesc);
-                                          Button cancelBtn =   view.findViewById(R.id.versionchecklib_version_dialog_cancel);
-                                          Button commitBtn =   view.findViewById(R.id.versionchecklib_version_dialog_commit);
+                                        TextView updateTitle = (TextView) view.findViewById(R.id.updateTitle);
+                                        TextView updateTime = (TextView) view.findViewById(R.id.updateTime);
+                                        TextView updateVersion = (TextView) view.findViewById(R.id.updateVersion);
+                                        TextView updateSize = (TextView) view.findViewById(R.id.updateSize);
+                                        TextView updateDesc = (TextView) view.findViewById(R.id.updateDesc);
+                                        Button cancelBtn =   view.findViewById(R.id.versionchecklib_version_dialog_cancel);
+                                        Button commitBtn =   view.findViewById(R.id.versionchecklib_version_dialog_commit);
                                         updateTitle.setText(mCheckUpdateInfo.getAppName()+"  更新");
                                         updateTime.setText("发布时间："+mCheckUpdateInfo.getNewAppReleaseTime());
                                         updateVersion.setText("版本："+mCheckUpdateInfo.getNewAppVersionName());
@@ -92,8 +92,8 @@ public class VersionCheckUtil {
                                         updateDesc.setText(mCheckUpdateInfo.getNewAppUpdateDesc());
                                         updateDesc.setMovementMethod(ScrollingMovementMethod.getInstance());
                                         Dialog dialog =   new AlertDialog.Builder(context).setView(view).show();
-                                        //updateDesc.setText(versionBundle.getContent());
-                                       // updateDesc.setText(versionBundle.getContent());
+                                        updateDesc.setText(versionBundle.getContent());
+                                        updateDesc.setText(versionBundle.getContent());
                                         if(mCheckUpdateInfo.getIsForceUpdate() == 1){
                                             cancelBtn.setVisibility(View.GONE);
                                         }
