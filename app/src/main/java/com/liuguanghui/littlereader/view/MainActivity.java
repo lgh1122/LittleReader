@@ -23,6 +23,7 @@ import com.liuguanghui.littlereader.R;
 import com.liuguanghui.littlereader.adapter.NovelListAdapter;
 import com.liuguanghui.littlereader.db.entity.NovelBean;
 import com.liuguanghui.littlereader.db.helper.NovelHelper;
+import com.liuguanghui.littlereader.turn.TurnActivity;
 import com.liuguanghui.littlereader.util.CommonUtil;
 import com.liuguanghui.littlereader.util.ImageLoader;
 import com.liuguanghui.littlereader.util.VersionCheckUtil;
@@ -260,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intentAdd);
                 break;*/
             case R.id.action_settings:
-                Intent intentDetaile = new Intent(this,NovelSettingsActivity.class);
+                Intent intentDetaile = new Intent(this,TurnActivity.class);
                 startActivity(intentDetaile);
                 //Toast.makeText(MainActivity.this, "设置", Toast.LENGTH_SHORT).show();
                 break;

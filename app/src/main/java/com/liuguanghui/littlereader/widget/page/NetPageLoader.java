@@ -1,4 +1,23 @@
-package com.liuguanghui.littlereader.page;
+package com.liuguanghui.littlereader.widget.page;
+
+import android.support.annotation.Nullable;
+
+
+import com.liuguanghui.littlereader.db.entity.ChapterBean;
+import com.liuguanghui.littlereader.db.entity.NovelBean;
+import com.liuguanghui.littlereader.db.helper.ChapterHelper;
+import com.liuguanghui.littlereader.db.helper.NovelHelper;
+import com.liuguanghui.littlereader.util.Constant;
+import com.liuguanghui.littlereader.util.FileUtils;
+
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by newbiechen on 17-5-29.
@@ -7,18 +26,25 @@ package com.liuguanghui.littlereader.page;
 
 public class NetPageLoader extends PageLoader{
     private static final String TAG = "PageFactory";
+    private ChapterHelper chapterHelper = null;
 
-   /* public NetPageLoader(PageView pageView) {
+    public NetPageLoader(PageView pageView) {
         super(pageView);
     }
 
+
+
     //初始化书籍
     @Override
-    public void openBook(CollBookBean collBook){
+    public void openBook(NovelBean collBook){
         super.openBook(collBook);
         isBookOpen = false;
-        if (collBook.getBookChapters() == null) return;
-        mChapterList = convertTxtChapter(collBook.getBookChapters());
+        if(chapterHelper == null){
+            chapterHelper = ChapterHelper.getsInstance();
+        }
+        List<ChapterBean> chapterBeans = chapterHelper.findNovelChapters(collBook.getNetid(),collBook.getId());
+        if (chapterBeans == null) return;
+        mChapterList = convertTxtChapter(chapterBeans);
         //设置目录回调
         if (mPageChangeListener != null){
             mPageChangeListener.onCategoryFinish(mChapterList);
@@ -27,13 +53,16 @@ public class NetPageLoader extends PageLoader{
         loadCurrentChapter();
     }
 
-    private List<TxtChapter> convertTxtChapter(List<BookChapterBean> bookChapters){
+    private List<TxtChapter> convertTxtChapter(List<ChapterBean> bookChapters){
         List<TxtChapter> txtChapters = new ArrayList<>(bookChapters.size());
-        for (BookChapterBean bean : bookChapters){
+        for (ChapterBean bean : bookChapters){
             TxtChapter chapter = new TxtChapter();
-            chapter.bookId = bean.getBookId();
+            chapter.setNetId(bean.getNetid());
+            chapter.setNovelId(bean.getNovelId());
+            chapter.setId(bean.getId());
             chapter.title = bean.getTitle();
-            chapter.link = bean.getLink();
+
+            chapter.link = bean.getTitle();
             txtChapters.add(chapter);
         }
         return txtChapters;
@@ -48,7 +77,7 @@ public class NetPageLoader extends PageLoader{
 
         //获取要加载的文件
         TxtChapter txtChapter = mChapterList.get(chapter);
-        File file = new File(Constant.BOOK_CACHE_PATH + mCollBook.get_id()
+        File file = new File(Constant.BOOK_CACHE_PATH + mCollBook.getId()
                 + File.separator + mChapterList.get(chapter).title + FileUtils.SUFFIX_WY);
         if (!file.exists()) return null;
 
@@ -162,7 +191,7 @@ public class NetPageLoader extends PageLoader{
     }
 
     @Override
-    public void setChapterList(List<BookChapterBean> bookChapters) {
+    public void setChapterList(List<ChapterBean> bookChapters) {
         if (bookChapters == null) return;
 
         mChapterList = convertTxtChapter(bookChapters);
@@ -177,14 +206,15 @@ public class NetPageLoader extends PageLoader{
         super.saveRecord();
         if (mCollBook != null && isBookOpen){
             //表示当前CollBook已经阅读
-            mCollBook.setUpdate(false);
-            mCollBook.setLastRead(StringUtils.
-                    dateConvert(System.currentTimeMillis(), Constant.FORMAT_BOOK_DATE));
+           mCollBook.setIsNoReadUpdate(false);
+           mCollBook.setReadDate(System.currentTimeMillis());
+          /*  mCollBook.setLastRead(StringUtils.
+                    dateConvert(System.currentTimeMillis(), Constant.FORMAT_BOOK_DATE));*/
             //直接更新
-            CollBookHelper.getsInstance().saveBook(mCollBook);
+            NovelHelper.getsInstance().saveBook(mCollBook);
 //            BookRepository.getInstance()
 //                    .saveCollBook(mCollBook);
         }
-    }*/
+    }
 }
 

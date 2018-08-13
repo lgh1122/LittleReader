@@ -1,4 +1,44 @@
-package com.liuguanghui.littlereader.page;
+package com.liuguanghui.littlereader.widget.page;
+
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Typeface;
+import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.text.TextPaint;
+
+
+import com.liuguanghui.littlereader.MyApplication;
+import com.liuguanghui.littlereader.R;
+import com.liuguanghui.littlereader.db.entity.ChapterBean;
+import com.liuguanghui.littlereader.db.entity.NovelBean;
+import com.liuguanghui.littlereader.db.entity.NovelRecordBean;
+import com.liuguanghui.littlereader.db.gen.NovelRecordBeanDao;
+import com.liuguanghui.littlereader.db.helper.NovelRecordBeanHelper;
+import com.liuguanghui.littlereader.util.Constant;
+import com.liuguanghui.littlereader.util.IOUtils;
+import com.liuguanghui.littlereader.util.ReadSettingManager;
+import com.liuguanghui.littlereader.util.ScreenUtils;
+import com.liuguanghui.littlereader.util.StringUtils;
+import com.liuguanghui.littlereader.util.ToastUtils;
+import com.liuguanghui.littlereader.util.rxhelper.RxUtils;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by newbiechen on 17-7-1.
@@ -15,7 +55,7 @@ public abstract class PageLoader {
     public static final int STATUS_PARSE = 5;    //正在解析 (一般用于本地数据加载)
     public static final int STATUS_PARSE_ERROR = 6; //本地文件解析错误(暂未被使用)
 
-   /* static final int DEFAULT_MARGIN_HEIGHT = 28;
+    static final int DEFAULT_MARGIN_HEIGHT = 28;
     static final int DEFAULT_MARGIN_WIDTH = 12;
 
     //默认的显示参数配置
@@ -24,7 +64,7 @@ public abstract class PageLoader {
     //当前章节列表
     protected List<TxtChapter> mChapterList;
     //书本对象
-    protected CollBookBean mCollBook;
+    protected NovelBean mCollBook;
     //监听器
     protected OnPageChangeListener mPageChangeListener;
 
@@ -57,8 +97,8 @@ public abstract class PageLoader {
     //被遮盖的页，或者认为被取消显示的页
     private TxtPage mCancelPage;
     //存储阅读记录类
-    private BookRecordBean mBookRecord;
-    *//*****************params**************************//*
+    private NovelRecordBean mBookRecord;
+    /*****************params**************************/
     //当前的状态
     protected int mStatus = STATUS_LOADING;
     //当前章
@@ -102,7 +142,7 @@ public abstract class PageLoader {
     //当前是否是夜间模式
     private boolean isNightMode;
 
-    *//*****************************init params*******************************//*
+    /*****************************init params*******************************/
     public PageLoader(PageView pageView) {
         mPageView = pageView;
 
@@ -180,7 +220,7 @@ public abstract class PageLoader {
         mPageView.setBgColor(mPageBg);
     }
 
-    *//****************************** public method***************************//*
+    /****************************** public method***************************/
     //跳转到上一章
     public int skipPreChapter() {
         if (!isBookOpen) {
@@ -325,8 +365,8 @@ public abstract class PageLoader {
     //绘制背景
     public void setBgColor(int theme) {
         if (isNightMode && theme == ReadSettingManager.NIGHT_MODE) {
-            mTextColor = ContextCompat.getColor(WYApplication.getAppContext(), R.color.color_fff_99);
-            mPageBg = ContextCompat.getColor(WYApplication.getAppContext(), R.color.black);
+            mTextColor = ContextCompat.getColor(MyApplication.getAppContext(), R.color.color_fff_99);
+            mPageBg = ContextCompat.getColor(MyApplication.getAppContext(), R.color.black);
         } else if (isNightMode) {
             mBgTheme = theme;
             mSettingManager.setReadBackground(theme);
@@ -334,24 +374,24 @@ public abstract class PageLoader {
             mSettingManager.setReadBackground(theme);
             switch (theme) {
                 case ReadSettingManager.READ_BG_DEFAULT:
-                    mTextColor = ContextCompat.getColor(WYApplication.getAppContext(), R.color.color_2c);
-                    mPageBg = ContextCompat.getColor(WYApplication.getAppContext(), R.color.color_cec29c);
+                    mTextColor = ContextCompat.getColor(MyApplication.getAppContext(), R.color.color_2c);
+                    mPageBg = ContextCompat.getColor(MyApplication.getAppContext(), R.color.color_cec29c);
                     break;
                 case ReadSettingManager.READ_BG_1:
-                    mTextColor = ContextCompat.getColor(WYApplication.getAppContext(), R.color.color_2f332d);
-                    mPageBg = ContextCompat.getColor(WYApplication.getAppContext(), R.color.color_ccebcc);
+                    mTextColor = ContextCompat.getColor(MyApplication.getAppContext(), R.color.color_2f332d);
+                    mPageBg = ContextCompat.getColor(MyApplication.getAppContext(), R.color.color_ccebcc);
                     break;
                 case ReadSettingManager.READ_BG_2:
-                    mTextColor = ContextCompat.getColor(WYApplication.getAppContext(), R.color.color_92918c);
-                    mPageBg = ContextCompat.getColor(WYApplication.getAppContext(), R.color.color_aaa);
+                    mTextColor = ContextCompat.getColor(MyApplication.getAppContext(), R.color.color_92918c);
+                    mPageBg = ContextCompat.getColor(MyApplication.getAppContext(), R.color.color_aaa);
                     break;
                 case ReadSettingManager.READ_BG_3:
-                    mTextColor = ContextCompat.getColor(WYApplication.getAppContext(), R.color.color_383429);
-                    mPageBg = ContextCompat.getColor(WYApplication.getAppContext(), R.color.color_d1cec5);
+                    mTextColor = ContextCompat.getColor(MyApplication.getAppContext(), R.color.color_383429);
+                    mPageBg = ContextCompat.getColor(MyApplication.getAppContext(), R.color.color_d1cec5);
                     break;
                 case ReadSettingManager.READ_BG_4:
-                    mTextColor = ContextCompat.getColor(WYApplication.getAppContext(), R.color.color_627176);
-                    mPageBg = ContextCompat.getColor(WYApplication.getAppContext(), R.color.color_001c27);
+                    mTextColor = ContextCompat.getColor(MyApplication.getAppContext(), R.color.color_627176);
+                    mPageBg = ContextCompat.getColor(MyApplication.getAppContext(), R.color.color_001c27);
                     break;
             }
         }
@@ -399,27 +439,27 @@ public abstract class PageLoader {
         //书没打开，就没有记录
         if (!isBookOpen) return;
 
-        mBookRecord.setBookId(mCollBook.get_id());
-        mBookRecord.setChapter(mCurChapterPos);
+        mBookRecord.setNovelId(mCollBook.getId());
+        mBookRecord.setNetId(mCollBook.getNetid());
+        mBookRecord.setChapterId(mCurChapterPos);
         mBookRecord.setPagePos(mCurPage.position);
 
         //存储到数据库
-        BookRecordHelper.getsInstance().saveRecordBook(mBookRecord);
+         NovelRecordBeanHelper.getsInstance().saveNovelRecordBean(mBookRecord);
     }
 
     //打开书本，初始化书籍
-    public void openBook(CollBookBean collBook) {
+    public void openBook(NovelBean collBook) {
         mCollBook = collBook;
         //init book record
 
         //从数据库取阅读数据
-        mBookRecord = BookRecordHelper.getsInstance()
-                .findBookRecordById(mCollBook.get_id());
+        mBookRecord = NovelRecordBeanHelper.getsInstance().findNovelRecordBeanById(collBook.getNetid(),collBook.getId());
         if (mBookRecord == null) {
-            mBookRecord = new BookRecordBean();
+            mBookRecord = new NovelRecordBean();
         }
 
-        mCurChapterPos = mBookRecord.getChapter();
+        mCurChapterPos = (int) mBookRecord.getChapterId();
         mLastChapter = mCurChapterPos;
     }
 
@@ -466,14 +506,14 @@ public abstract class PageLoader {
         }
     }
 
-    *//*******************************abstract method***************************************//*
+    /*******************************abstract method***************************************/
     //设置章节
-    public abstract void setChapterList(List<BookChapterBean> bookChapters);
+    public abstract void setChapterList(List<ChapterBean> bookChapters);
 
     @Nullable
     protected abstract List<TxtPage> loadPageList(int chapter);
 
-    *//***********************************default method***********************************************//*
+    /***********************************default method***********************************************/
     //通过流获取Page的方法
     List<TxtPage> loadPages(TxtChapter chapter, BufferedReader br) {
         //生成的页面
@@ -607,10 +647,10 @@ public abstract class PageLoader {
         Canvas canvas = new Canvas(bitmap);
         int tipMarginHeight = ScreenUtils.dpToPx(3);
         if (!isUpdate) {
-            *//****绘制背景****//*
+            /****绘制背景****/
             canvas.drawColor(mPageBg);
 
-            *//*****初始化标题的参数********//*
+            /*****初始化标题的参数********/
             //需要注意的是:绘制text的y的起始点是text的基准线的位置，而不是从text的头部的位置
             float tipTop = tipMarginHeight - mTipPaint.getFontMetrics().top;
             //根据状态不一样，数据不一样
@@ -623,7 +663,7 @@ public abstract class PageLoader {
                 canvas.drawText(mCurPage.title, mMarginWidth, tipTop, mTipPaint);
             }
 
-            *//******绘制页码********//*
+            /******绘制页码********/
             //底部的字显示的位置Y
             float y = mDisplayHeight - mTipPaint.getFontMetrics().bottom - tipMarginHeight;
             //只有finish的时候采用页码
@@ -636,7 +676,7 @@ public abstract class PageLoader {
             mBgPaint.setColor(mPageBg);
             canvas.drawRect(mDisplayWidth / 2, mDisplayHeight - mMarginHeight + ScreenUtils.dpToPx(2), mDisplayWidth, mDisplayHeight, mBgPaint);
         }
-        *//******绘制电池********//*
+        /******绘制电池********/
 
         int visibleRight = mDisplayWidth - mMarginWidth;
         int visibleBottom = mDisplayHeight - tipMarginHeight;
@@ -676,7 +716,7 @@ public abstract class PageLoader {
         mBatteryPaint.setStyle(Paint.Style.FILL);
         canvas.drawRect(innerFrame, mBatteryPaint);
 
-        *//******绘制当前时间********//*
+        /******绘制当前时间********/
         //底部的字显示的位置Y
         float y = mDisplayHeight - mTipPaint.getFontMetrics().bottom - tipMarginHeight;
         String time = StringUtils.dateConvert(System.currentTimeMillis(), Constant.FORMAT_TIME);
@@ -690,7 +730,7 @@ public abstract class PageLoader {
         if (mPageMode == PageView.PAGE_MODE_SCROLL) {
             canvas.drawColor(mPageBg);
         }
-        *//******绘制内容****//*
+        /******绘制内容****/
         if (mStatus != STATUS_FINISH) {
             //绘制字体
             String tip = "";
@@ -1025,9 +1065,9 @@ public abstract class PageLoader {
         mCurPage = mCancelPage;
     }
 
-    *//**
+    /**
      * @return:获取初始显示的页面
-     *//*
+     */
     TxtPage getCurPage(int pos) {
         if (mPageChangeListener != null) {
             mPageChangeListener.onPageChange(pos);
@@ -1036,11 +1076,11 @@ public abstract class PageLoader {
     }
 
 
-    *//**************************************private method********************************************//*
+    /**************************************private method********************************************/
 
-    *//**
+    /**
      * @return:获取上一个页面
-     *//*
+     */
     private TxtPage getPrevPage() {
         int pos = mCurPage.position - 1;
         if (pos < 0) {
@@ -1052,9 +1092,9 @@ public abstract class PageLoader {
         return mCurPageList.get(pos);
     }
 
-    *//**
+    /**
      * @return:获取下一的页面
-     *//*
+     */
     private TxtPage getNextPage() {
         if (null != mCurPage) {
             int pos = mCurPage.position + 1;
@@ -1069,19 +1109,19 @@ public abstract class PageLoader {
         return new TxtPage();
     }
 
-    *//**
+    /**
      * @return:获取上一个章节的最后一页
-     *//*
+     */
     private TxtPage getPrevLastPage() {
         int pos = mCurPageList.size() - 1;
         return mCurPageList.get(pos);
     }
 
-    *//**
+    /**
      * 检测当前状态是否能够进行加载章节数据
      *
      * @return
-     *//*
+     */
     private boolean checkStatus() {
         if (mStatus == STATUS_LOADING) {
             ToastUtils.show("正在加载中，请稍等");
@@ -1096,7 +1136,7 @@ public abstract class PageLoader {
         return true;
     }
 
-    *//*****************************************interface*****************************************//*
+    /*****************************************interface*****************************************/
 
     public interface OnPageChangeListener {
         void onChapterChange(int pos);
@@ -1112,5 +1152,5 @@ public abstract class PageLoader {
 
         //页面改变
         void onPageChange(int pos);
-    }*/
+    }
 }

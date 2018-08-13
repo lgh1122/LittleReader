@@ -1,4 +1,4 @@
-package com.liuguanghui.littlereader.page;
+package com.liuguanghui.littlereader.widget.page;
 
 import java.util.List;
 

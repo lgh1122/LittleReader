@@ -14,10 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.liuguanghui.littlereader.R;
-import com.liuguanghui.littlereader.page.PageView;
-import com.liuguanghui.littlereader.util.ReadSettingManager;
+ import com.liuguanghui.littlereader.util.ReadSettingManager;
 import com.liuguanghui.littlereader.util.ScreenUtils;
 import com.liuguanghui.littlereader.util.StatusBarUtils;
+import com.liuguanghui.littlereader.widget.page.PageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,7 +29,7 @@ import static android.view.View.VISIBLE;
 public class NovelReadActivity extends AppCompatActivity {
 
 
-    private  PageView mPvReadPage;
+    private PageView mPvReadPage;
     AppBarLayout mReadAblTopMenu;
     LinearLayout mReadLlBottomMenu;
     TextView mReadTvPageTip;
@@ -47,8 +47,6 @@ public class NovelReadActivity extends AppCompatActivity {
         mReadAblTopMenu = findViewById(R.id.read_abl_top_menu);
         mReadLlBottomMenu = findViewById(R.id.read_ll_bottom_menu);
         mReadTvPageTip = findViewById(R.id.read_tv_page_tip);
-
-
         initView();
 
     }

@@ -51,6 +51,9 @@
             android:name=".view.NovelReadActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
+            android:name=".turn.TurnActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".view.NovelSettingsActivity"
             android:theme="@style/SettingAppTheme"
             android:label="@string/title_activity_novel_settings"></activity>

@@ -1,12 +1,23 @@
-package com.liuguanghui.littlereader.page;
+package com.liuguanghui.littlereader.widget.page;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+
+
+import com.liuguanghui.littlereader.util.ScreenUtils;
+import com.liuguanghui.littlereader.widget.animation.CoverPageAnim;
+import com.liuguanghui.littlereader.widget.animation.HorizonPageAnim;
+import com.liuguanghui.littlereader.widget.animation.NonePageAnim;
+import com.liuguanghui.littlereader.widget.animation.PageAnimation;
+import com.liuguanghui.littlereader.widget.animation.ScrollPageAnim;
+import com.liuguanghui.littlereader.widget.animation.SimulationPageAnim;
+import com.liuguanghui.littlereader.widget.animation.SlidePageAnim;
 
 
 /**
@@ -42,7 +53,26 @@ public class PageView extends View {
     //唤醒菜单的区域
     private RectF mCenterRect = null;
 
+    //动画类
+    private PageAnimation mPageAnim;
+    //动画监听类
+    private PageAnimation.OnPageChangeListener mPageAnimListener = new PageAnimation.OnPageChangeListener() {
+        @Override
+        public boolean hasPrev() {
+            return PageView.this.hasPrev();
+        }
 
+        @Override
+        public boolean hasNext() {
+            return PageView.this.hasNext();
+        }
+
+        @Override
+        public void pageCancel(){
+            mTouchListener.cancel();
+            mPageLoader.pageCancel();
+        }
+    };
 
     //点击监听
     private TouchListener mTouchListener;
@@ -68,14 +98,14 @@ public class PageView extends View {
         mViewHeight = h;
         //重置图片的大小,由于w,h可能比原始的Bitmap更大，所以如果使用Bitmap.setWidth/Height()是会报错的。
         //所以最终还是创建Bitmap的方式。这种方式比较消耗性能，暂时没有找到更好的方法。
-        //setPageMode(mPageMode);
+        setPageMode(mPageMode);
         //重置页面加载器的页面
-       // mPageLoader.setDisplaySize(w,h);
+        mPageLoader.setDisplaySize(w,h);
         //初始化完成
         isPrepare = true;
     }
 
-   /* //设置翻页的模式
+    //设置翻页的模式
     public void setPageMode(int pageMode){
         mPageMode = pageMode;
         //视图未初始化的时候，禁止调用
@@ -101,9 +131,9 @@ public class PageView extends View {
             default:
                 mPageAnim = new SimulationPageAnim(mViewWidth, mViewHeight,this,mPageAnimListener);
         }
-    }*/
+    }
 
-    /*public Bitmap getNextPage(){
+    public Bitmap getNextPage(){
         if (mPageAnim == null) return null;
         return mPageAnim.getNextBitmap();
     }
@@ -171,7 +201,7 @@ public class PageView extends View {
         mPageAnim.startAnim();
         this.postInvalidate();
     }
-*/
+
     public void setBgColor(int color){
         mBgColor = color;
     }
@@ -187,7 +217,7 @@ public class PageView extends View {
         canvas.drawColor(mBgColor);
 
         //绘制动画
-        //mPageAnim.draw(canvas);
+        mPageAnim.draw(canvas);
     }
 
     @Override
@@ -204,7 +234,7 @@ public class PageView extends View {
                 mStartY = y;
                 isMove = false;
                 canTouch = mTouchListener.onTouch();
-                //mPageAnim.onTouchEvent(event);
+                mPageAnim.onTouchEvent(event);
                 break;
             case MotionEvent.ACTION_MOVE:
                 //判断是否大于最小滑动值。
@@ -215,7 +245,7 @@ public class PageView extends View {
 
                 //如果滑动了，则进行翻页。
                 if(isMove){
-                   // mPageAnim.onTouchEvent(event);
+                    mPageAnim.onTouchEvent(event);
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -235,7 +265,7 @@ public class PageView extends View {
                         return true;
                     }
                 }
-                //mPageAnim.onTouchEvent(event);
+                mPageAnim.onTouchEvent(event);
                 break;
         }
         return true;
@@ -248,7 +278,7 @@ public class PageView extends View {
             hasNext = mTouchListener.nextPage();
             //加载下一页
             if (hasNext){
-               // hasNext = mPageLoader.next();
+                hasNext = mPageLoader.next();
             }
         }
         return hasNext;
@@ -261,7 +291,7 @@ public class PageView extends View {
             hasPrev = mTouchListener.prePage();
             //加载下一页
             if (hasPrev){
-             //   hasPrev = mPageLoader.prev();
+                hasPrev = mPageLoader.prev();
             }
         }
         return hasPrev;
@@ -270,60 +300,63 @@ public class PageView extends View {
     @Override
     public void computeScroll() {
         //进行滑动
-        //mPageAnim.scrollAnim();
+        mPageAnim.scrollAnim();
         super.computeScroll();
     }
 
     //如果滑动状态没有停止就取消状态，重新设置Anim的触碰点
     public void abortAnimation() {
-        //mPageAnim.abortAnim();
+        mPageAnim.abortAnim();
     }
 
     public boolean isPrepare(){
         return isPrepare;
     }
 
-    /*public boolean isRunning(){
+    public boolean isRunning(){
         return mPageAnim.isRunning();
-    }*/
+    }
 
     public void setTouchListener(TouchListener mTouchListener){
         this.mTouchListener = mTouchListener;
     }
 
-    /*public void drawNextPage(){
+    public void drawNextPage(){
         if (mPageAnim instanceof HorizonPageAnim){
             ((HorizonPageAnim) mPageAnim).changePage();
         }
         mPageLoader.onDraw(getNextPage(), false);
-    }*/
+    }
 
     /**
      * 刷新当前页(主要是为了ScrollAnimation)
      *
      */
-    /*public void refreshPage(){
+    public void refreshPage(){
         if (mPageAnim instanceof ScrollPageAnim){
             ((ScrollPageAnim) mPageAnim).refreshBitmap();
         }
         drawCurPage(false);
     }
-*/
+
     //refreshPage和drawCurPage容易造成歧义,后面需要修改
     /**
      * 绘制当前页。
-
+     * @param isUpdate
      */
-    /*public void drawCurPage(boolean isUpdate){
+    public void drawCurPage(boolean isUpdate){
         mPageLoader.onDraw(getNextPage(), isUpdate);
-    }*/
+    }
 
     //获取PageLoader
     public PageLoader getPageLoader(boolean isLocal){
         if (mPageLoader == null){
-
-                //mPageLoader = new NetPageLoader(this);
-
+            if (isLocal){
+               // mPageLoader = new LocalPageLoader(this);
+            }
+            else {
+                mPageLoader = new NetPageLoader(this);
+            }
         }
         return mPageLoader;
     }
