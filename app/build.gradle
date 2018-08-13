@@ -92,6 +92,11 @@ dependencies {
  * loading loading加载动画
  */
     implementation "com.github.ybq:Android-SpinKit:1.1.0"
+    /**
+     * rxhttputils
+     */
+    implementation "com.github.lygttpod:RxHttpUtils:2.0.3"
+
 
 }
 configurations.all {

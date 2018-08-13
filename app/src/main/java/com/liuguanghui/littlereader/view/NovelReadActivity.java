@@ -14,7 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.liuguanghui.littlereader.R;
- import com.liuguanghui.littlereader.util.ReadSettingManager;
+import com.liuguanghui.littlereader.db.entity.ChapterBean;
+import com.liuguanghui.littlereader.inter.IBookChapters;
+import com.liuguanghui.littlereader.util.ReadSettingManager;
 import com.liuguanghui.littlereader.util.ScreenUtils;
 import com.liuguanghui.littlereader.util.StatusBarUtils;
 import com.liuguanghui.littlereader.widget.page.PageView;
@@ -26,7 +28,7 @@ import java.io.InputStream;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class NovelReadActivity extends AppCompatActivity {
+public class NovelReadActivity extends AppCompatActivity implements IBookChapters {
 
 
     private PageView mPvReadPage;
@@ -42,6 +44,7 @@ public class NovelReadActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+       // mVmContentInfo = new VMBookContentInfo(mContext, this);
         setContentView(R.layout.activity_novel_read);
         mPvReadPage = findViewById(R.id.pv_read_page);
         mReadAblTopMenu = findViewById(R.id.read_abl_top_menu);
@@ -197,6 +200,31 @@ public class NovelReadActivity extends AppCompatActivity {
     private int currentShowEndIndex = 0;
 
     private int currentBottomEndIndex = 0;
+
+    @Override
+    public void bookChapters(ChapterBean bookChaptersBean) {
+
+    }
+
+    @Override
+    public void finishChapters() {
+
+    }
+
+    @Override
+    public void errorChapters() {
+
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void stopLoading() {
+
+    }
 
     private class ReadingThread extends Thread {
         public void run() {

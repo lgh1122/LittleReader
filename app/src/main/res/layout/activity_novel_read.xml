@@ -49,7 +49,7 @@
         </android.support.design.widget.AppBarLayout>
 
         <!--阅读页面-->
-        <com.liuguanghui.littlereader.page.PageView
+        <com.liuguanghui.littlereader.widget.page.PageView.PageView
             android:id="@+id/pv_read_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
