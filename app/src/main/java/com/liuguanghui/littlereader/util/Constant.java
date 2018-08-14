@@ -11,12 +11,7 @@ public class Constant {
     public static String BASE_URL;
 
     static {
-        if (true) {
-//            BASE_URL = "http://192.168.1.121:3389";
-            BASE_URL = "http://192.168.5.87:3389";
-        } else {
-            BASE_URL = "http://www.luliangdev.cn";
-        }
+        BASE_URL = "http://139.199.36.170:9002";
     }
 
     public static final String ZHUISHU_IMAGE_URL = "http://statics.zhuishushenqi.com";

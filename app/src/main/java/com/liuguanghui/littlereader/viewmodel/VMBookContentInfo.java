@@ -8,18 +8,12 @@ import com.liuguanghui.littlereader.api.BookService;
 import com.liuguanghui.littlereader.db.entity.ChapterBean;
 import com.liuguanghui.littlereader.inter.IBookChapters;
 import com.liuguanghui.littlereader.util.JsonResult;
-import com.liuguanghui.littlereader.util.SearchResult;
 import com.liuguanghui.littlereader.util.rxhelper.RxObserver;
 import com.liuguanghui.littlereader.widget.page.TxtChapter;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -56,9 +50,9 @@ public class VMBookContentInfo extends BaseViewModel {
                         if (jsonResult.getStatus() == 200) {
                             List<ChapterBean> chapterBeans = (List<ChapterBean>) jsonResult.getData();
 
-                        if (iBookChapters != null) {
-                           iBookChapters.bookChapters(chapterBeans);
-                        }
+                            if (iBookChapters != null) {
+                                iBookChapters.bookChapters(chapterBeans);
+                            }
                         }
                     }
                 });
@@ -119,7 +113,6 @@ public class VMBookContentInfo extends BaseViewModel {
                         }, new Action() {
                             @Override
                             public void run() throws Exception {
-
                             }
                         }, new Consumer<Disposable>() {
                             @Override

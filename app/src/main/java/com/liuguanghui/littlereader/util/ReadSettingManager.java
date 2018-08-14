@@ -1,7 +1,7 @@
 package com.liuguanghui.littlereader.util;
 
 
-import com.liuguanghui.littlereader.page.PageView;
+import com.liuguanghui.littlereader.widget.page.PageView;
 
 /**
  * Created by newbiechen on 17-5-17.

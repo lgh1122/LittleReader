@@ -11,13 +11,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.TextPaint;
 
-
 import com.liuguanghui.littlereader.MyApplication;
 import com.liuguanghui.littlereader.R;
 import com.liuguanghui.littlereader.db.entity.ChapterBean;
 import com.liuguanghui.littlereader.db.entity.NovelBean;
 import com.liuguanghui.littlereader.db.entity.NovelRecordBean;
-import com.liuguanghui.littlereader.db.gen.NovelRecordBeanDao;
 import com.liuguanghui.littlereader.db.helper.NovelRecordBeanHelper;
 import com.liuguanghui.littlereader.util.Constant;
 import com.liuguanghui.littlereader.util.IOUtils;
@@ -25,7 +23,6 @@ import com.liuguanghui.littlereader.util.ReadSettingManager;
 import com.liuguanghui.littlereader.util.ScreenUtils;
 import com.liuguanghui.littlereader.util.StringUtils;
 import com.liuguanghui.littlereader.util.ToastUtils;
-import com.liuguanghui.littlereader.util.rxhelper.RxUtils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -34,10 +31,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -997,7 +990,7 @@ public abstract class PageLoader {
         }
 
         //调用异步进行预加载加载
-        Observable.create(new ObservableOnSubscribe<List<TxtPage>>() {
+       /* Observable.create(new ObservableOnSubscribe<List<TxtPage>>() {
             @Override
             public void subscribe(ObservableEmitter<List<TxtPage>> e) throws Exception {
                 e.onNext(loadPageList(nextChapter));
@@ -1023,7 +1016,7 @@ public abstract class PageLoader {
             public void onComplete() {
 
             }
-        });
+        });*/
 
         //调用异步进行预加载加载
 //        Single.create(new SingleOnSubscribe<List<TxtPage>>() {

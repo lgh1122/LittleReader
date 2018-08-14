@@ -251,6 +251,11 @@ public class CircleHeader extends View implements RefreshHeader {
     }
 
     @Override
+    public void onHorizontalDrag(float percentX, int offsetX, int offsetMax) {
+
+    }
+
+    @Override
     public void onPullingDown(float percent, int offset, int headHeight, int extendHeight) {
         mHeadHeight = headHeight;
         mWaveHeight = Math.max(offset - headHeight, 0) * .8f;
@@ -346,6 +351,11 @@ public class CircleHeader extends View implements RefreshHeader {
         animator.setDuration(DURATION_FINISH);
         animator.start();
         return DURATION_FINISH;
+    }
+
+    @Override
+    public boolean isSupportHorizontalDrag() {
+        return false;
     }
 
     @Override
