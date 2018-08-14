@@ -7,6 +7,7 @@ import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity(
 		// Define indexes spanning multiple columns here.
@@ -57,6 +58,8 @@ public class NovelBean implements Serializable {
 	// 不存在数据库中
 	@Transient
 	private Long lastUpdateTime;
+	@Transient
+	private List<ChapterBean> chapterBeans;
 	// 不存在数据库中
 	@Transient
 	private String firstLetter;
@@ -260,11 +263,11 @@ public class NovelBean implements Serializable {
 	}
 
 
+	public List<ChapterBean> getChapterBeans() {
+		return chapterBeans;
+	}
 
-
-    
-    
-   
-    
-    
+	public void setChapterBeans(List<ChapterBean> chapterBeans) {
+		this.chapterBeans = chapterBeans;
+	}
 }

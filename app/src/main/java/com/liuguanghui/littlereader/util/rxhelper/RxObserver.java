@@ -1,25 +1,17 @@
-/*
+
 package com.liuguanghui.littlereader.util.rxhelper;
+
 
 import android.content.Intent;
 
 import com.allen.library.RxHttpUtils;
 import com.allen.library.base.BaseDataObserver;
 import com.allen.library.bean.BaseData;
-
-
-
-import com.lianglu.weyue.view.activity.impl.LoginActivity;
+import com.allen.library.utils.ToastUtils;
+import com.liuguanghui.littlereader.MyApplication;
 import com.liuguanghui.littlereader.util.LoadingHelper;
-import com.liuguanghui.littlereader.util.ToastUtils;
 
 import io.reactivex.disposables.Disposable;
-
-*/
-/**
- * Created by Liang_Lu on 2017/12/4.
- *//*
-
 
 public abstract class RxObserver<T> extends BaseDataObserver<T> {
 
@@ -32,32 +24,26 @@ public abstract class RxObserver<T> extends BaseDataObserver<T> {
         this.isLoading = isLoading;
     }
 
-    */
-/**
+    /**
      * 失败回调
      *
      * @param errorMsg 错误信息
-     *//*
-
+     */
     protected abstract void onError(String errorMsg);
 
-    */
-/**
+    /**
      * 成功回调
      *
      * @param data 结果
-     *//*
-
+     */
     protected abstract void onSuccess(T data);
 
-    */
-/**
+    /**
      * //     * 成功回调
      * //     *
      * //     * @param d 结果
      * //
-     *//*
-
+     */
 //    public abstract void onSubscribe(Disposable d);
     @Override
     public void doOnSubscribe(Disposable d) {
@@ -81,12 +67,12 @@ public abstract class RxObserver<T> extends BaseDataObserver<T> {
                 onSuccess(data.getData());
                 break;
             case 60001:
-            case 60002:
+           /* case 60002:
                 ToastUtils.showToast(data.getMsg());
-                Intent intent = new Intent(WYApplication.getAppContext(), LoginActivity.class);
+                Intent intent = new Intent(MyApplication.getAppContext(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                WYApplication.getAppContext().startActivity(intent);
-                break;
+                MyApplication.getAppContext().startActivity(intent);
+                break;*/
             case 10005:
             case 40000:
             case 40001:
@@ -109,11 +95,9 @@ public abstract class RxObserver<T> extends BaseDataObserver<T> {
         dismissLoading();
     }
 
-    */
-/**
+    /**
      * 隐藏loading对话框
-     *//*
-
+     */
     private void dismissLoading() {
         if (isLoading) {
             LoadingHelper.getInstance().hideLoading();
@@ -122,4 +106,3 @@ public abstract class RxObserver<T> extends BaseDataObserver<T> {
 
 
 }
-*/

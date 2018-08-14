@@ -27,6 +27,7 @@
         <item>0</item>
         <item>-1</item>
     </string-array>
-
+    <string name="modeNight">夜间</string>
+    <string name="modeMorning">日间</string>
 
 </resources>

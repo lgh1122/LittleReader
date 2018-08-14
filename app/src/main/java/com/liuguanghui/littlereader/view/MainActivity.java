@@ -122,11 +122,13 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 NovelBean info = novelInfos.get(position);
                 //Toast.makeText(MainActivity.this,info.getTitle(),Toast.LENGTH_SHORT).show();;
-                 info.setReadDate(SystemClock.currentThreadTimeMillis());
+                info.setReadDate(SystemClock.currentThreadTimeMillis());
                 novelHelper.saveBook(info);
                 CommonUtil.sortDesc(novelInfos);
                 adapter.notifyDataSetChanged();
                 Intent intent = new Intent(MainActivity.this,NovelReadActivity.class);
+                intent.putExtra("netId" ,info.getNetid());
+                intent.putExtra("novelId" ,info.getId());
                 startActivity(intent);
                 Log.i("TestHandle","Test Start "+ String.valueOf(System.currentTimeMillis()));
                 /*Message testMsg = Message.obtain();

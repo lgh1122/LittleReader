@@ -127,6 +127,15 @@ public class ChapterHelper {
         }
     }
 
+    private List<ChapterBean> findNovelChapters(Long netId, Long novelId) {
+        List<ChapterBean> chapterBeans = chapterBeanDao
+                .queryBuilder()
+                .where(ChapterBeanDao.Properties.NovelId.eq(novelId),ChapterBeanDao.Properties.Netid.eq(netId))
+                .list();
+        return chapterBeans;
+
+    }
+
     /**
      * 查询书籍章节
      */
@@ -138,14 +147,16 @@ public class ChapterHelper {
     }
 
     /**
-     * 查询书籍的所有章节
+     * 查询书籍的所有章节 异步
      */
-    public List<ChapterBean> findNovelChapters(Long netId,Long novelId) {
-        return chapterBeanDao
-                .queryBuilder()
-                .where(ChapterBeanDao.Properties.NovelId.eq(novelId),ChapterBeanDao.Properties.Netid.eq(netId))
-                .orderAsc(ChapterBeanDao.Properties.Id)
-                .list();
+    public  Observable<List<ChapterBean>> findNovelChaptersRx(Long netId,Long novelId) {
+        return Observable.create(e -> {
+            List<ChapterBean> chapterBeans = chapterBeanDao
+                    .queryBuilder()
+                    .where(ChapterBeanDao.Properties.NovelId.eq(novelId),ChapterBeanDao.Properties.Netid.eq(netId))
+                    .list();
+            e.onNext(chapterBeans);
+        });
     }
 
 

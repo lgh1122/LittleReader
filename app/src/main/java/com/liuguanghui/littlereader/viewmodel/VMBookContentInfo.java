@@ -2,12 +2,24 @@ package com.liuguanghui.littlereader.viewmodel;
 
 import android.content.Context;
 
+import com.allen.library.RxHttpUtils;
+import com.allen.library.interceptor.Transformer;
+import com.liuguanghui.littlereader.api.BookService;
+import com.liuguanghui.littlereader.db.entity.ChapterBean;
 import com.liuguanghui.littlereader.inter.IBookChapters;
+import com.liuguanghui.littlereader.util.JsonResult;
+import com.liuguanghui.littlereader.util.SearchResult;
+import com.liuguanghui.littlereader.util.rxhelper.RxObserver;
 import com.liuguanghui.littlereader.widget.page.TxtChapter;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 
 /**
@@ -25,29 +37,32 @@ public class VMBookContentInfo extends BaseViewModel {
         this.iBookChapters = iBookChapters;
     }
 
-    public void loadChapters(String bookId) {/*
+    public void loadChapters(Long netId , Long novelId) {
         RxHttpUtils.getSInstance().addHeaders(tokenMap()).createSApi(BookService.class)
-                .bookChapters(bookId)
+                .bookChapters(netId,novelId)
                 .compose(Transformer.switchSchedulers())
-                .subscribe(new RxObserver<ChapterBean>() {
+                .subscribe(new RxObserver<String>() {
                     @Override
                     protected void onError(String errorMsg) {
 
                     }
 
                     @Override
-                    protected void onSuccess(BookChaptersBean data) {
+                    protected void onSuccess(String data) {
+                        if(data != null){
+
+                        }
+                        JsonResult jsonResult = JsonResult.formatToList(data,ChapterBean.class);
+                        if (jsonResult.getStatus() == 200) {
+                            List<ChapterBean> chapterBeans = (List<ChapterBean>) jsonResult.getData();
+
                         if (iBookChapters != null) {
-                            iBookChapters.bookChapters(data);
+                           iBookChapters.bookChapters(chapterBeans);
+                        }
                         }
                     }
-
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        addDisposadle(d);
-                    }
                 });
-                */
+
     }
 
     /**
@@ -56,14 +71,14 @@ public class VMBookContentInfo extends BaseViewModel {
      * @param bookId
      * @param bookChapterList
      */
-    public void loadContent(String bookId, List<TxtChapter> bookChapterList){ /*
+    public void loadContent( Long netId,Long bookId, List<TxtChapter> bookChapterList){
         int size = bookChapterList.size();
         //取消上次的任务，防止多次加载
         if (mDisposable != null) {
             mDisposable.dispose();
         }
 
-        List<Observable<ChapterContentBean>> chapterContentBeans = new ArrayList<>(bookChapterList.size());
+       /* List<Observable<ChapterContentBean>> chapterContentBeans = new ArrayList<>(bookChapterList.size());
         ArrayDeque<String> titles = new ArrayDeque<>(bookChapterList.size());
         //首先判断是否Chapter已经存在
         for (int i = 0; i < size; i++) {
@@ -111,7 +126,7 @@ public class VMBookContentInfo extends BaseViewModel {
                             public void accept(Disposable disposable) throws Exception {
                                 mDisposable = disposable;
                             }
-                        });
-*/
+                        });*/
+
     }
 }

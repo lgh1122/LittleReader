@@ -9,7 +9,7 @@ import android.content.res.Resources;
  */
 
 public class MyApplication  extends Application {
-
+    //private static RequestQueue sRequestQueue;
     private static Context context;
 
     @Override

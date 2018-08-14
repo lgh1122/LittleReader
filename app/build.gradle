@@ -88,16 +88,17 @@ dependencies {
     //implementation 'com.qiangxi.checkupdatelibrary:checkupdatelibrary:1.1.3@aar'
     implementation 'com.lovedise:permissiongen:0.0.6'
     implementation 'com.allenliu.versionchecklib:library:2.0.5'
-/**
- * loading loading加载动画
- */
+    /**
+     * loading loading加载动画
+     */
     implementation "com.github.ybq:Android-SpinKit:1.1.0"
     /**
      * rxhttputils
      */
     implementation "com.github.lygttpod:RxHttpUtils:2.0.3"
 
-
+    implementation "com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30"
+    implementation 'com.github.lygttpod:RxHttpUtils:2.0.3'
 }
 configurations.all {
     resolutionStrategy.force 'com.android.support:support-annotations:27.1.1'
