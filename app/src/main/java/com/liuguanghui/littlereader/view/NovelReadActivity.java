@@ -44,7 +44,6 @@ import com.liuguanghui.littlereader.util.StatusBarUtils;
 import com.liuguanghui.littlereader.util.StringUtils;
 import com.liuguanghui.littlereader.viewmodel.BaseViewModel;
 import com.liuguanghui.littlereader.viewmodel.VMBookContentInfo;
-import com.liuguanghui.littlereader.widget.dialog.ReadSettingDialog;
 import com.liuguanghui.littlereader.widget.page.NetPageLoader;
 import com.liuguanghui.littlereader.widget.page.PageLoader;
 import com.liuguanghui.littlereader.widget.page.PageView;
@@ -201,6 +200,9 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
         String netId = intent.getStringExtra("netId");
         String novelId = intent.getStringExtra("novelId");
         //书籍有本地和
+        if(novelHelper == null){
+            novelHelper =NovelHelper.getsInstance();
+        }
           mCollBook =  novelHelper.findBookById(Long.parseLong(netId),Long.parseLong(novelId));
         if(mCollBook!=null){
             // 本地存在， 书籍章节列表也存在
@@ -355,6 +357,7 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
           {
             //如果是网络文件
             //如果是已经收藏的，那么就从数据库中获取目录
+              isCollected = false;
             if (isCollected) {
                 Disposable disposable = ChapterHelper.getsInstance().findNovelChaptersRx(mNetId,mBookId)
                          // .compose(RxUtils::toSimpleSingle)

@@ -1,6 +1,7 @@
 package com.liuguanghui.littlereader.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.allen.library.RxHttpUtils;
 import com.allen.library.interceptor.Transformer;
@@ -38,7 +39,9 @@ public class VMBookContentInfo extends BaseViewModel {
                 .subscribe(new RxObserver<String>() {
                     @Override
                     protected void onError(String errorMsg) {
-
+                        Log.e("Error",errorMsg);
+                        int i = 0;
+                        i++;
                     }
 
                     @Override

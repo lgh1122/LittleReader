@@ -127,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
                 CommonUtil.sortDesc(novelInfos);
                 adapter.notifyDataSetChanged();
                 Intent intent = new Intent(MainActivity.this,NovelReadActivity.class);
-                intent.putExtra("netId" ,info.getNetid());
-                intent.putExtra("novelId" ,info.getId());
+                intent.putExtra("netId" ,info.getNetid().toString());
+                intent.putExtra("novelId" ,info.getId().toString());
                 startActivity(intent);
                 Log.i("TestHandle","Test Start "+ String.valueOf(System.currentTimeMillis()));
                 /*Message testMsg = Message.obtain();
