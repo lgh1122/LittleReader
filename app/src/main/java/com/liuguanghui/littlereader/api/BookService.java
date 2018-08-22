@@ -1,9 +1,7 @@
 package com.liuguanghui.littlereader.api;
 
 import com.allen.library.bean.BaseData;
-
-
-import java.util.List;
+import com.liuguanghui.littlereader.viewmodel.BookChaptersBean;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -51,7 +49,10 @@ public interface BookService {
      * @return
      */
     @GET(ModelPath.CHAPTERLIST + "/{netId}/{novelId}")
-    Observable<BaseData<String>> bookChapters(@Path("netId") Long netId,@Path("novelId") Long novelId);
+    Observable<BookChaptersBean> bookChapters(@Path("netId") Long netId, @Path("novelId") Long novelId);
+
+    @GET(ModelPath.CHAPTERLIST + "/{netId}/{novelId}")
+    Observable<String> bookChapterStrs(@Path("netId") Long netId, @Path("novelId") Long novelId);
 
     /**
      * 根据link获取正文

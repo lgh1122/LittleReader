@@ -5,11 +5,10 @@ import android.util.Log;
 
 import com.allen.library.RxHttpUtils;
 import com.allen.library.interceptor.Transformer;
+import com.allen.library.observer.CommonObserver;
 import com.liuguanghui.littlereader.api.BookService;
 import com.liuguanghui.littlereader.db.entity.ChapterBean;
 import com.liuguanghui.littlereader.inter.IBookChapters;
-import com.liuguanghui.littlereader.util.JsonResult;
-import com.liuguanghui.littlereader.util.rxhelper.RxObserver;
 import com.liuguanghui.littlereader.widget.page.TxtChapter;
 
 import java.util.List;
@@ -35,23 +34,19 @@ public class VMBookContentInfo extends BaseViewModel {
     public void loadChapters(Long netId , Long novelId) {
         RxHttpUtils.getSInstance().addHeaders(tokenMap()).createSApi(BookService.class)
                 .bookChapters(netId,novelId)
-                .compose(Transformer.switchSchedulers())
-                .subscribe(new RxObserver<String>() {
+                .compose(Transformer.<BookChaptersBean>switchSchedulers())
+                .subscribe(new CommonObserver<BookChaptersBean>() {
                     @Override
-                    protected void onError(String errorMsg) {
-                        Log.e("Error",errorMsg);
-                        int i = 0;
-                        i++;
+                    protected void onError(String s) {
+                        Log.e("Error",s);
                     }
-
                     @Override
-                    protected void onSuccess(String data) {
-                        if(data != null){
-
+                    protected void onSuccess(BookChaptersBean bookChaptersBean) {
+                        if(bookChaptersBean != null){
                         }
-                        JsonResult jsonResult = JsonResult.formatToList(data,ChapterBean.class);
-                        if (jsonResult.getStatus() == 200) {
-                            List<ChapterBean> chapterBeans = (List<ChapterBean>) jsonResult.getData();
+                        //JsonResult jsonResult = JsonResult.formatToList(data,ChapterBean.class);
+                        if (bookChaptersBean.getStatus() == 200) {
+                            List<ChapterBean> chapterBeans = bookChaptersBean.getData();//(List<ChapterBean>) jsonResult.getData();
 
                             if (iBookChapters != null) {
                                 iBookChapters.bookChapters(chapterBeans);
@@ -59,6 +54,29 @@ public class VMBookContentInfo extends BaseViewModel {
                         }
                     }
                 });
+
+        /*RxHttpUtils.getSInstance().addHeaders(tokenMap()).createSApi(BookService.class)
+                .bookChapters(netId,novelId)
+                .compose(Transformer.switchSchedulers())
+                .subscribe(new RxObserver<BookChaptersBean>() {
+                    @Override
+                    protected void onError(String errorMsg) {
+                        Log.e("Error",errorMsg);
+                    }
+                    @Override
+                    protected void onSuccess(BookChaptersBean data) {
+                        if(data != null){
+                        }
+                        //JsonResult jsonResult = JsonResult.formatToList(data,ChapterBean.class);
+                        if (data.getStatus() == 200) {
+                            List<ChapterBean> chapterBeans = data.getData();//(List<ChapterBean>) jsonResult.getData();
+
+                            if (iBookChapters != null) {
+                                iBookChapters.bookChapters(chapterBeans);
+                            }
+                        }
+                    }
+                });*/
 
     }
 
