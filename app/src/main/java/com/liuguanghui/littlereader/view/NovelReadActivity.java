@@ -490,15 +490,15 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
         mCollBook.setChapterBeans(bookChapterList);
 
         //如果是更新加载，那么重置PageLoader的Chapter
-       /* if (mCollBook.getIsNoReadUpdate() && isCollected) {
+        if (mCollBook.getIsNoReadUpdate() && isCollected) {
             mPageLoader.setChapterList(bookChapterList);
             //异步下载更新的内容存到数据库
             //TODO
-            //BookChapterHelper.getsInstance().saveBookChaptersWithAsync(bookChapterList);
+            ChapterHelper.getsInstance().saveBookChaptersWithAsync(bookChapterList);
 
-        } else {*/
+        } else {
             mPageLoader.openBook(mCollBook);
-        //}
+         }
 
     }
 

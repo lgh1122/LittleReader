@@ -2,10 +2,8 @@ package com.liuguanghui.littlereader.db.helper;
 
 
 import com.liuguanghui.littlereader.db.entity.ChapterBean;
-import com.liuguanghui.littlereader.db.entity.NovelBean;
 import com.liuguanghui.littlereader.db.gen.ChapterBeanDao;
 import com.liuguanghui.littlereader.db.gen.DaoSession;
-import com.liuguanghui.littlereader.db.gen.NovelBeanDao;
 
 import java.util.List;
 
@@ -77,7 +75,7 @@ public class ChapterHelper {
      *
      * @param chapterBeans
      */
-    public void saveBooksWithAsync(List<ChapterBean> chapterBeans) {
+    public void saveBookChaptersWithAsync(List<ChapterBean> chapterBeans) {
         daoSession.startAsyncSession()
                 .runInTx(
                         () -> {
