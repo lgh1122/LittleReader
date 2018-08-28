@@ -357,7 +357,7 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
           {
             //如果是网络文件
             //如果是已经收藏的，那么就从数据库中获取目录
-              isCollected = false;
+            // isCollected = false;
             if (isCollected) {
                 Disposable disposable = ChapterHelper.getsInstance().findNovelChaptersRx(mNetId,mBookId)
                          // .compose(RxUtils::toSimpleSingle)
