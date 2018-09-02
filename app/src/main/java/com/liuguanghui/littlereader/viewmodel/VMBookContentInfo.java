@@ -12,7 +12,6 @@ import com.liuguanghui.littlereader.entity.SpiderChapter;
 import com.liuguanghui.littlereader.inter.IBookChapters;
 import com.liuguanghui.littlereader.util.BookManager;
 import com.liuguanghui.littlereader.util.BookSaveUtils;
-import com.liuguanghui.littlereader.util.JsonResult;
 import com.liuguanghui.littlereader.widget.page.TxtChapter;
 
 import java.util.ArrayDeque;
@@ -104,13 +103,13 @@ public class VMBookContentInfo extends BaseViewModel {
             mDisposable.dispose();
         }
 
-       List<Observable<String>> chapterContentBeans = new ArrayList<>(bookChapterList.size());
+       List<Observable<ChapterContentBean>> chapterContentBeans = new ArrayList<>(bookChapterList.size());
         ArrayDeque<String> titles = new ArrayDeque<>(bookChapterList.size());
         //首先判断是否Chapter已经存在
         for (int i = 0; i < size; i++) {
             TxtChapter bookChapter = bookChapterList.get(i);
             if (!(BookManager.isChapterCached(netId,bookId, bookChapter.getId()))) {
-                Observable<String> contentBeanObservable = RxHttpUtils
+                Observable<ChapterContentBean> contentBeanObservable = RxHttpUtils
                         .createApi(BookService.class).bookContent(bookChapter.getNetId(),bookChapter.getNovelId(),bookChapter.getId());
                 chapterContentBeans.add(contentBeanObservable);
                 titles.add(bookChapter.getTitle());
@@ -127,12 +126,13 @@ public class VMBookContentInfo extends BaseViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Consumer<String>() {
+                        new Consumer<ChapterContentBean>() {
                             @Override
-                            public void accept(String data) throws Exception {
-                                JsonResult jsonResult = JsonResult.formatToList(data,SpiderChapter.class);
-                                if (jsonResult.getStatus() == 200) {
-                                    SpiderChapter sp = (SpiderChapter) jsonResult.getData();
+                            public void accept(ChapterContentBean data) throws Exception {
+
+                               // JsonResult jsonResult = JsonResult.formatToList(result,SpiderChapter.class);
+                                if (data.getStatus() == 200) {
+                                    SpiderChapter sp = (SpiderChapter) data.getData();
                                     BookSaveUtils.getInstance().saveChapterInfo(sp.getNetid(),sp.getNovelId(),sp.getId(), sp.getContent());
 
                                 }
@@ -146,7 +146,8 @@ public class VMBookContentInfo extends BaseViewModel {
                                 if (bookChapterList.get(0).getTitle().equals(title)) {
                                     iBookChapters.errorChapters();
                                 }
-                                //LogUtils.e(throwable.getMessage());
+                                Log.i("error",throwable.getMessage());
+                               // LogUtils.e(throwable.getMessage());
                             }
                         }, new Action() {
                             @Override
@@ -158,6 +159,30 @@ public class VMBookContentInfo extends BaseViewModel {
                                 mDisposable = disposable;
                             }
                         } );
+
+         /*RxHttpUtils
+                .createApi(BookService.class).bookContent(3L,16201L ,4419440L).
+
+                compose(Transformer.<Object>switchSchedulers())
+                .subscribe(new CommonObserver<Object>() {
+                    @Override
+                    protected void onError(String s) {
+                        Log.e("Error",s);
+                    }
+                    @Override
+                    protected void onSuccess(Object string) {
+                        if(string != null){
+                        }
+                        JsonResult jsonResult = JsonResult.formatToList((String) string,SpiderChapter.class);
+                        if (jsonResult.getStatus() == 200) {
+                            SpiderChapter spiderChapter = (SpiderChapter) jsonResult.getData();//(List<ChapterBean>) jsonResult.getData();
+
+                            if (spiderChapter != null) {
+                               // iBookChapters.bookChapters(chapterBeans);
+                            }
+                        }
+                    }
+                });*/
 
     }
 }

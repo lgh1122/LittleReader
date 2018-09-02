@@ -61,7 +61,7 @@ import io.reactivex.disposables.Disposable;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class NovelReadActivity extends AppCompatActivity implements IBookChapters {
+public class NovelReadActivity extends AppCompatActivity implements IBookChapters, View.OnClickListener {
 
     protected Context mContext;
     private Toolbar mToolbar;
@@ -211,7 +211,7 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
             isCollected = true;
 
         }
-
+        mReadTvCategory.setOnClickListener(this);
 
         isNightMode = ReadSettingManager.getInstance().isNightMode();
         isFullScreen = ReadSettingManager.getInstance().isFullScreen();
@@ -353,6 +353,7 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
 
     }
 
+
     private void initData() {
           {
             //如果是网络文件
@@ -365,7 +366,8 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
                             mCollBook.setChapterBeans(beans);
                             mPageLoader.openBook(mCollBook);
                             //如果是被标记更新的,重新从网络中获取目录
-                            if (mCollBook.getIsNoReadUpdate()) {
+                           // if (mCollBook.getIsNoReadUpdate()) {
+                            if (true) {
                                 mVmContentInfo.loadChapters(mNetId,mBookId);
                             }
                         });
@@ -495,6 +497,7 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
             //异步下载更新的内容存到数据库
             //TODO
             ChapterHelper.getsInstance().saveBookChaptersWithAsync(bookChapterList);
+            mPageLoader.openBook(mCollBook);
 
         } else {
             mPageLoader.openBook(mCollBook);
@@ -504,12 +507,18 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
 
     @Override
     public void finishChapters() {
-
+        if (mPageLoader.getPageStatus() == PageLoader.STATUS_LOADING) {
+            mPvReadPage.post(() -> {
+                mPageLoader.openChapter();
+            });
+        }
+        //当完成章节的时候，刷新列表
+        mReadCategoryAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void errorChapters() {
-
+        mPageLoader.chapterError();
     }
 
     @Override
@@ -520,6 +529,55 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
     @Override
     public void stopLoading() {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.read_tv_pre_chapter:
+                setCategorySelect(mPageLoader.skipPreChapter());
+                break;
+            case R.id.read_tv_next_chapter:
+                setCategorySelect(mPageLoader.skipNextChapter());
+                break;
+            case R.id.read_tv_category:
+                setCategorySelect(mPageLoader.getChapterPos());
+                //切换菜单
+                toggleMenu(true);
+                //打开侧滑动栏
+                mReadDlSlide.openDrawer(Gravity.START);
+                break;
+            case R.id.read_tv_night_mode:
+                if (isNightMode) {
+                    isNightMode = false;
+                } else {
+                    isNightMode = true;
+                }
+                mPageLoader.setNightMode(isNightMode);
+                toggleNightMode();
+                break;
+            /*case R.id.read_tv_setting:
+                toggleMenu(false);
+                mSettingDialog.show();
+                break;*/
+            case R.id.tv_toolbar_title:
+                finish();
+                break;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        super.onPause();
+        try{
+            mWakeLock.release();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if (isCollected) {
+            mPageLoader.saveRecord();
+        }
     }
 
     private class ReadingThread extends Thread {
@@ -621,5 +679,11 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
             Drawable drawable = ContextCompat.getDrawable(this, R.mipmap.read_menu_night);
             mReadTvNightMode.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
         }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
+        mPageLoader.closeBook();
     }
 }

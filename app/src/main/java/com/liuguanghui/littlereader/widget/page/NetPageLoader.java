@@ -77,8 +77,8 @@ public class NetPageLoader extends PageLoader{
 
         //获取要加载的文件
         TxtChapter txtChapter = mChapterList.get(chapter);
-        File file = new File(Constant.BOOK_CACHE_PATH + mCollBook.getId()
-                + File.separator + mChapterList.get(chapter).title + FileUtils.SUFFIX_WY);
+        File file = new File(Constant.BOOK_CACHE_PATH+ mCollBook.getNetid() + File.separator+ mCollBook.getId()
+                + File.separator + mChapterList.get(chapter).getId() + FileUtils.SUFFIX_WY);
         if (!file.exists()) return null;
 
         Reader reader = null;

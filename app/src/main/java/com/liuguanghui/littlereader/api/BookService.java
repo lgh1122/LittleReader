@@ -2,6 +2,7 @@ package com.liuguanghui.littlereader.api;
 
 import com.allen.library.bean.BaseData;
 import com.liuguanghui.littlereader.viewmodel.BookChaptersBean;
+import com.liuguanghui.littlereader.viewmodel.ChapterContentBean;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -60,7 +61,7 @@ public interface BookService {
      * @return
      */
     @GET(ModelPath.CHAPTERCONTENT + "/{netId}/{novelId}/{chapterId}")
-    Observable<String> bookContent(@Path("netId") Long netId,@Path("novelId") Long novelId,@Path("chapterId") Long chapterId);
+    Observable<ChapterContentBean> bookContent(@Path("netId") Long netId, @Path("novelId") Long novelId, @Path("chapterId") Long chapterId);
 
     /**
      * 根据tag获取书籍

@@ -23,6 +23,7 @@ import com.liuguanghui.littlereader.util.ReadSettingManager;
 import com.liuguanghui.littlereader.util.ScreenUtils;
 import com.liuguanghui.littlereader.util.StringUtils;
 import com.liuguanghui.littlereader.util.ToastUtils;
+import com.liuguanghui.littlereader.util.rxhelper.RxUtils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -31,6 +32,10 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -434,6 +439,7 @@ public abstract class PageLoader {
 
         mBookRecord.setNovelId(mCollBook.getId());
         mBookRecord.setNetId(mCollBook.getNetid());
+       // mBookRecord.setChapterId(mChapterList.get(mCurChapterPos).getId());
         mBookRecord.setChapterId(mCurChapterPos);
         mBookRecord.setPagePos(mCurPage.position);
 
@@ -626,6 +632,7 @@ public abstract class PageLoader {
         }
         return pages;
     }
+
 
     void onDraw(Bitmap bitmap, boolean isUpdate) {
         drawBackground(mPageView.getBgBitmap(), isUpdate);
@@ -990,7 +997,7 @@ public abstract class PageLoader {
         }
 
         //调用异步进行预加载加载
-       /* Observable.create(new ObservableOnSubscribe<List<TxtPage>>() {
+       Observable.create(new ObservableOnSubscribe<List<TxtPage>>() {
             @Override
             public void subscribe(ObservableEmitter<List<TxtPage>> e) throws Exception {
                 e.onNext(loadPageList(nextChapter));
@@ -1016,7 +1023,7 @@ public abstract class PageLoader {
             public void onComplete() {
 
             }
-        });*/
+        });
 
         //调用异步进行预加载加载
 //        Single.create(new SingleOnSubscribe<List<TxtPage>>() {
