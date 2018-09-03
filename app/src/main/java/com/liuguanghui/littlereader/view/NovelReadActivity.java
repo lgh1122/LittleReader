@@ -1,6 +1,7 @@
 package com.liuguanghui.littlereader.view;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -531,6 +532,38 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
 
     }
 
+    //注册亮度观察者
+    private void registerBrightObserver() {
+        try {
+            if (mBrightObserver != null) {
+                if (!isRegistered) {
+                    final ContentResolver cr = getContentResolver();
+                    cr.unregisterContentObserver(mBrightObserver);
+                    cr.registerContentObserver(BRIGHTNESS_MODE_URI, false, mBrightObserver);
+                    cr.registerContentObserver(BRIGHTNESS_URI, false, mBrightObserver);
+                    cr.registerContentObserver(BRIGHTNESS_ADJ_URI, false, mBrightObserver);
+                    isRegistered = true;
+                }
+            }
+        } catch (Throwable throwable) {
+            Log.e(TAG, "[ouyangyj] register mBrightObserver error! " + throwable);
+        }
+    }
+
+    //解注册
+    private void unregisterBrightObserver() {
+        try {
+            if (mBrightObserver != null) {
+                if (isRegistered) {
+                    getContentResolver().unregisterContentObserver(mBrightObserver);
+                    isRegistered = false;
+                }
+            }
+        } catch (Throwable throwable) {
+            Log.e(TAG, "unregister BrightnessObserver error! " + throwable);
+        }
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -567,8 +600,18 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        registerBrightObserver();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mWakeLock.acquire();
+    }
+
+     @Override
     protected void onPause() {
-        super.onPause();
         super.onPause();
         try{
             mWakeLock.release();
@@ -579,32 +622,20 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
             mPageLoader.saveRecord();
         }
     }
-
-    private class ReadingThread extends Thread {
-        public void run() {
-            AssetManager am = getAssets();
-            InputStream response;
-            try {
-                response = am.open("text.txt");
-                if (response != null) {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    int i = -1;
-                    while ((i = response.read()) != -1) {
-                        baos.write(i);
-                    }
-                    text = new String(baos.toByteArray(), "UTF-8");
-                    baos.close();
-                    response.close();
-                    handler.sendEmptyMessage(0);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterBrightObserver();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
+        mPageLoader.closeBook();
     }
 
-    private Handler handler = new Handler() {
+
+    /*private Handler handler = new Handler() {
         public void handleMessage(android.os.Message msg) {
 
 
@@ -614,8 +645,8 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
 
 
             if (textLenght > COUNT) {
-               /* textView.setText(text.subSequence(0, COUNT));
-                textView = (TextView) view2.findViewById(R.id.textview);*/
+               *//* textView.setText(text.subSequence(0, COUNT));
+                textView = (TextView) view2.findViewById(R.id.textview);*//*
                 if (textLenght > (COUNT << 1)) {
                    // mPvReadPage.setText(text.subSequence(COUNT, COUNT * 2));
                     currentShowEndIndex = COUNT;
@@ -631,7 +662,7 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
                 currentBottomEndIndex = textLenght;
             }
         };
-    };
+    };*/
 
 
     /**
@@ -680,10 +711,5 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
             mReadTvNightMode.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
         }
     }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(mReceiver);
-        mPageLoader.closeBook();
-    }
+
 }
