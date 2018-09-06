@@ -5,7 +5,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.res.AssetManager;
 import android.database.ContentObserver;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -51,9 +50,6 @@ import com.liuguanghui.littlereader.widget.page.PageView;
 import com.liuguanghui.littlereader.widget.page.TxtChapter;
 import com.liuguanghui.littlereader.widget.theme.ColorView;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -221,7 +217,6 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
         mPageLoader = mPvReadPage.getPageLoader(false);
         mReadDlSlide.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        initData();
 
         //更多设置dialog
        // mSettingDialog = new ReadSettingDialog(this, mPageLoader);
@@ -352,6 +347,9 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
             }
         });
 
+        initData();
+
+
     }
 
 
@@ -367,8 +365,7 @@ public class NovelReadActivity extends AppCompatActivity implements IBookChapter
                             mCollBook.setChapterBeans(beans);
                             mPageLoader.openBook(mCollBook);
                             //如果是被标记更新的,重新从网络中获取目录
-                           // if (mCollBook.getIsNoReadUpdate()) {
-                            if (true) {
+                        if (mCollBook.getIsNoReadUpdate()) {
                                 mVmContentInfo.loadChapters(mNetId,mBookId);
                             }
                         });

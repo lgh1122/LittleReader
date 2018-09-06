@@ -23,10 +23,8 @@ import com.liuguanghui.littlereader.R;
 import com.liuguanghui.littlereader.adapter.NovelListAdapter;
 import com.liuguanghui.littlereader.db.entity.NovelBean;
 import com.liuguanghui.littlereader.db.helper.NovelHelper;
-import com.liuguanghui.littlereader.turn.TurnActivity;
 import com.liuguanghui.littlereader.util.CommonUtil;
 import com.liuguanghui.littlereader.util.ImageLoader;
-import com.liuguanghui.littlereader.util.VersionCheckUtil;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -48,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
     private  int index = 0;
     private boolean exits = false;
+
+    private RefreshLayout content_refreshLayout;
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
             super.handleMessage(msg);
         }
     };
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,11 +82,13 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        VersionCheckUtil versionCheckUtil = new VersionCheckUtil(MainActivity.this);
-        versionCheckUtil.sendRequest();
+       /*
+       //检查软件版本
+       VersionCheckUtil versionCheckUtil = new VersionCheckUtil(MainActivity.this);
+        versionCheckUtil.sendRequest();*/
 
         content_text_view = findViewById(R.id.content_text_view);
-        RefreshLayout content_refreshLayout = (RefreshLayout)findViewById(R.id.content_refreshLayout);
+        content_refreshLayout = (RefreshLayout)findViewById(R.id.content_refreshLayout);
 
         content_refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -92,11 +96,14 @@ public class MainActivity extends AppCompatActivity {
                 content_text_view.setVisibility(View.VISIBLE);
                 refreshlayout.finishRefresh(2000);
                 novelInfos = novelHelper.findAllBooks();
+                //TODO 从远程服务器获取章节最新章节
+                //更新isNoReadUpdate 章节id
                 adapter.setAppInfos(novelInfos);
                 adapter.notifyDataSetChanged();
                 content_text_view.setVisibility(View.GONE);
             }
         });
+        content_refreshLayout.autoRefresh();
         content_refreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
             @Override
             public void onLoadmore(RefreshLayout refreshlayout) {
@@ -122,24 +129,15 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 NovelBean info = novelInfos.get(position);
                 //Toast.makeText(MainActivity.this,info.getTitle(),Toast.LENGTH_SHORT).show();;
-                info.setReadDate(SystemClock.currentThreadTimeMillis());
-                novelHelper.saveBook(info);
-                CommonUtil.sortDesc(novelInfos);
-                adapter.notifyDataSetChanged();
+                //info.setReadDate(SystemClock.currentThreadTimeMillis());
+                /*novelHelper.saveBook(info);
+                CommonUtil.sortDesc(novelInfos);*/
                 Intent intent = new Intent(MainActivity.this,NovelReadActivity.class);
                 intent.putExtra("netId" ,info.getNetid().toString());
                 intent.putExtra("novelId" ,info.getId().toString());
                 startActivity(intent);
                 Log.i("TestHandle","Test Start "+ String.valueOf(System.currentTimeMillis()));
-                /*Message testMsg = Message.obtain();
-                testMsg.what = 2;
-                testMsg.obj =++ index;
-                handler.sendMessage(testMsg);*/
-                /*try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }*/
+
                 Log.i("TestHandle","Test end  "+ String.valueOf(System.currentTimeMillis()));
                /* intent.putExtra("netId" ,netId);
                 intent.putExtra("novelId" ,novelId);*/
@@ -221,6 +219,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        novelInfos = novelHelper.findAllBooks();
+        adapter.setAppInfos(novelInfos);
+        adapter.notifyDataSetChanged();
+
+    }
+
+    @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if(!exits){
             Toast.makeText(MainActivity.this,"再次点击退出应用",Toast.LENGTH_SHORT).show();
@@ -263,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intentAdd);
                 break;*/
             case R.id.action_settings:
-                Intent intentDetaile = new Intent(this,TurnActivity.class);
+                Intent intentDetaile = new Intent(this,NovelSettingsActivity.class);
                 startActivity(intentDetaile);
                 //Toast.makeText(MainActivity.this, "设置", Toast.LENGTH_SHORT).show();
                 break;

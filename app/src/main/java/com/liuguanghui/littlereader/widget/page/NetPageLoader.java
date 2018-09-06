@@ -43,7 +43,7 @@ public class NetPageLoader extends PageLoader{
             chapterHelper = ChapterHelper.getsInstance();
         }
         List<ChapterBean> chapterBeans =collBook.getChapterBeans(); //chapterHelper.findNovelChapters(collBook.getNetid(),collBook.getId());
-        if (chapterBeans == null) return;
+        if (chapterBeans == null || chapterBeans.size() ==0) return;
         mChapterList = convertTxtChapter(chapterBeans);
         //设置目录回调
         if (mPageChangeListener != null){
